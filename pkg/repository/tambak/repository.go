@@ -6,4 +6,5 @@ import (
 
 type Repository interface {
 	GetAllTambak() ([]models.Tambak, error)
+	PostMonitorTambak(models.MonitorTambak) error
 }

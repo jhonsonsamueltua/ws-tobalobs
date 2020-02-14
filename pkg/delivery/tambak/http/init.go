@@ -10,11 +10,12 @@ type tambak struct {
 	tambakUsecase tambakUsecase.Usecase
 }
 
-func InitTambakHandler(e *echo.Echo, p tambakUsecase.Usecase) {
+func InitTambakHandler(e *echo.Echo, u tambakUsecase.Usecase) {
 	handler := &tambak{
-		tambakUsecase: p,
+		tambakUsecase: u,
 	}
 
 	//register handler
 	e.GET("/tambak", handler.GetAllTambak)
+	e.POST("/tambak", handler.PostMonitorTambak)
 }

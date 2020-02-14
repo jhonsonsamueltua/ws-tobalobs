@@ -10,12 +10,36 @@
   version = "v1.1.1"
 
 [[projects]]
+  digest = "1:76dc72490af7174349349838f2fe118996381b31ea83243812a97e5a0fd5ed55"
+  name = "github.com/dgrijalva/jwt-go"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "06ea1031745cb8b3dab3f6a236daf2b0aa468b7e"
+  version = "v3.2.0"
+
+[[projects]]
   digest = "1:abeb38ade3f32a92943e5be54f55ed6d6e3b6602761d74b4aab4c9dd45c18abd"
   name = "github.com/fsnotify/fsnotify"
   packages = ["."]
   pruneopts = "UT"
   revision = "c2828203cd70a50dcccfb2761f8b1f8ceef9a8e9"
   version = "v1.4.7"
+
+[[projects]]
+  digest = "1:e17320223c7c866dfbec405efe8abc8e383ccad131fb76ca7ff70580dafb9067"
+  name = "github.com/go-redis/redis"
+  packages = [
+    ".",
+    "internal",
+    "internal/consistenthash",
+    "internal/hashtag",
+    "internal/pool",
+    "internal/proto",
+    "internal/util",
+  ]
+  pruneopts = "UT"
+  revision = "99cd690a7019656b0b67c6664453f27a6d8a658e"
+  version = "v6.15.7"
 
 [[projects]]
   digest = "1:ec6f9bf5e274c833c911923c9193867f3f18788c461f76f05f62bb1510e0ae65"
@@ -195,11 +219,13 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:2e35c4bc19bb98db40d5c287fb387dfbba94d8b40679040b1482a6deb9547497"
+  digest = "1:83790316a5f64622b7d202abffc13392d6521b50618cb6c6cbe78730f33be66e"
   name = "golang.org/x/crypto"
   packages = [
     "acme",
     "acme/autocert",
+    "bcrypt",
+    "blowfish",
   ]
   pruneopts = "UT"
   revision = "34f69633bfdcf9db92f698f8487115767eebef81"
@@ -265,12 +291,15 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/dgrijalva/jwt-go",
+    "github.com/go-redis/redis",
     "github.com/go-sql-driver/mysql",
     "github.com/labstack/echo",
     "github.com/lib/pq",
     "github.com/spf13/viper",
     "github.com/stretchr/testify/assert",
     "github.com/stretchr/testify/require",
+    "golang.org/x/crypto/bcrypt",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

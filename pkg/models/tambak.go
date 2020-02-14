@@ -6,3 +6,13 @@ type Tambak struct {
 	Location    string
 	Description string
 }
+
+type MonitorTambak struct {
+	MonitorTambakId int64
+	TambakId        int64
+	PH              float64
+	DO              float64
+	Suhu            float64
+	WaktuTanggal    string
+	Keterangan      string
+}

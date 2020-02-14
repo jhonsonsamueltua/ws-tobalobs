@@ -26,3 +26,19 @@ func (r *tambak) GetAllTambak() ([]models.Tambak, error) {
 
 	return allTambak, nil
 }
+
+func (r *tambak) PostMonitorTambak(m models.MonitorTambak) error {
+	statement, err := r.DB.Prepare(queryInsertMonitoringTambak)
+	if err != nil {
+		log.Println("[Repository][PostMonitorTambak][Prepare] Error : ", err)
+		return err
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(m.TambakId, m.PH, m.DO, m.Suhu, m.WaktuTanggal, m.Keterangan)
+	if err != nil {
+		log.Println("[Repository][PostMonitorTambak][Execute] Error : ", err)
+		return err
+	}
+	return err
+}

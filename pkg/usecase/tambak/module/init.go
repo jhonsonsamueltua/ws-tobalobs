@@ -9,8 +9,8 @@ type tambak struct {
 	tambakRepo tambakRepo.Repository
 }
 
-func InitTambakUsecase(p tambakRepo.Repository) tambakUsecase.Usecase {
+func InitTambakUsecase(r tambakRepo.Repository) tambakUsecase.Usecase {
 	return &tambak{
-		tambakRepo: p,
+		tambakRepo: r,
 	}
 }
