@@ -17,5 +17,8 @@ func InitTambakHandler(e *echo.Echo, u tambakUsecase.Usecase) {
 
 	//register handler
 	e.GET("/tambak", handler.GetAllTambak)
-	e.POST("/tambak", handler.PostMonitorTambak)
+	e.GET("/tambak/:tambakID", handler.GetTambakByID)
+	e.GET("/tambak/last-monitor/:tambakID", handler.GetLastMonitorTambak)
+	e.POST("/tambak/monitor", handler.PostMonitorTambak)
+	e.POST("/tambak", handler.CreateTambak)
 }

@@ -1,12 +1,9 @@
-package middleware
+package middleware_test
 
 // import (
 // 	"net/http"
 // 	test "net/http/httptest"
 // 	"testing"
-//
-//
-//
 // 
 
 // 	"github.com/labstack/echo"
