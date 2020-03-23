@@ -1,2 +1,6 @@
 [database]
-    conn = "root@tcp(127.0.0.1:3306)/test-lobster"
+    conn        = "root@tcp(127.0.0.1:3306)/tobalobs"
+[token]
+    issuer      = "tobalobs"
+    expires_at  = "time.Now().Add(time.Hour * 24).Unix()"
+    key         = "asdfghjkl"
