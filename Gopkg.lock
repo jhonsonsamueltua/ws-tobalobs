@@ -2,6 +2,14 @@
 
 
 [[projects]]
+  digest = "1:7106a03a6e7221ebd4efcd80d5e15e2a787709e1125856fc92025c46f050d198"
+  name = "github.com/appleboy/go-fcm"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "fcfa13df44b793bd4c1c53d2f282c5b0ec73e39a"
+  version = "v0.1.5"
+
+[[projects]]
   digest = "1:76dc72490af7174349349838f2fe118996381b31ea83243812a97e5a0fd5ed55"
   name = "github.com/dgrijalva/jwt-go"
   packages = ["."]
@@ -272,6 +280,7 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/appleboy/go-fcm",
     "github.com/dgrijalva/jwt-go",
     "github.com/go-redis/redis",
     "github.com/go-sql-driver/mysql",
