@@ -6,11 +6,13 @@ import (
 )
 
 type tambak struct {
-	tambakRepo tambakRepo.Repository
+	tambakRepo    tambakRepo.Repository
+	tambakFCMRepo tambakRepo.RepositoryFCM
 }
 
-func InitTambakUsecase(r tambakRepo.Repository) tambakUsecase.Usecase {
+func InitTambakUsecase(r tambakRepo.Repository, f tambakRepo.RepositoryFCM) tambakUsecase.Usecase {
 	return &tambak{
-		tambakRepo: r,
+		tambakRepo:    r,
+		tambakFCMRepo: f,
 	}
 }

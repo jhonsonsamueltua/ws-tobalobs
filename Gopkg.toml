@@ -25,22 +25,46 @@
 #   unused-packages = true
 
 
-# [[constraint]]
-#   name = "github.com/go-sql-driver/mysql"
-#   version = "1.4.1"
+[[constraint]]
+  name = "github.com/dgrijalva/jwt-go"
+  version = "3.2.0"
+
+[[constraint]]
+  name = "github.com/go-redis/redis"
+  version = "6.15.7"
+
+[[constraint]]
+  name = "github.com/go-sql-driver/mysql"
+  version = "1.5.0"
 
 [[constraint]]
   name = "github.com/labstack/echo"
-  version = "4.1.10"
+  version = "4.1.14"
+
+[[constraint]]
+  name = "github.com/lib/pq"
+  version = "1.3.0"
 
 [[constraint]]
   name = "github.com/spf13/viper"
-  version = "1.4.0"
+  version = "1.6.2"
 
 [[constraint]]
-  name = "github.com/stretchr/testify"
-  version = "1.4.0"
+  branch = "master"
+  name = "golang.org/x/crypto"
 
 [prune]
   go-tests = true
   unused-packages = true
+
+[metadata.heroku]
+  root-package = "github.com/ws-tobalobs"
+  go-version = "go1.12.7"
+  install = [ "./vendor/..." ]
+  ensure = "true"
+  additional-tools = ["github.com/golang-migrate/migrate"]
+
+# [metadata.heroku]
+#   root-package = "github.com/ws-tobalobs"
+#   go-version = "1.12.7"
+#   install = [ "./..." ]

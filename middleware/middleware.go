@@ -3,7 +3,6 @@ package middleware
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/dgrijalva/jwt-go"
@@ -45,7 +44,7 @@ func (m *GoMiddleware) CORS(next echo.HandlerFunc) echo.HandlerFunc {
 
 func (m *GoMiddleware) JwtAuthentication(next echo.HandlerFunc) echo.HandlerFunc {
 	return echo.HandlerFunc(func(c echo.Context) error {
-		notAuth := []string{"/user/login", "/user/register"}
+		notAuth := []string{"/api/user/login", "/api/user/register", "/api/tambak/monitor", "/api/tambak/monitor-menyimpang"}
 		requestPath := c.Request().URL.Path
 		for _, value := range notAuth {
 			if value == requestPath {
@@ -80,7 +79,7 @@ func (m *GoMiddleware) JwtAuthentication(next echo.HandlerFunc) echo.HandlerFunc
 		})
 
 		if err != nil { //Malformed token, returns with http code 403 as usual
-			resp.Message = "Malformed authentication token"
+			resp.Message = "Malformed authentication token or token is expired"
 			resp.Status = models.StatusFailed
 			c.Response().Header().Set(`X-Cursor`, "header")
 			return c.JSON(http.StatusForbidden, resp)
@@ -95,7 +94,7 @@ func (m *GoMiddleware) JwtAuthentication(next echo.HandlerFunc) echo.HandlerFunc
 
 		//Check token if token is stored in redis or InBlackList
 		inBlackList := isInBlacklist(tokenHeader, m.redis)
-		log.Println(inBlackList)
+		// log.Println(inBlackList)
 		if inBlackList {
 			resp.Message = "Token is not valid or InBlacklist"
 			resp.Status = models.StatusFailed
