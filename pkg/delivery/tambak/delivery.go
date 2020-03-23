@@ -9,4 +9,5 @@ type Delivery interface {
 	GetTambakByID(c echo.Context) error
 	GetLastMonitorTambak(c echo.Context) error
 	PostMonitorTambak(c echo.Context) error
+	PostPenyimpanganKondisiTambak(c echo.Context) error
 }

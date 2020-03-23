@@ -25,3 +25,10 @@ type MonitorTambak struct {
 	WaktuTanggal    string  `json:"waktuTanggal,omitempty"`
 	Keterangan      string  `json:"keterangan,omitempty"`
 }
+
+type NotifikasiPenyimpanganKondisiTambak struct {
+	NotifikasiPenyimpanganKondisiTambakId int64  `json:"notifikasiPenyimpanganKondisiTambakId,omitempty"`
+	MonitorTambakId                       int64  `json:"monitorTambakId,omitempty"`
+	PenyimpanganKondisiTambakId           int64  `json:"penyimpanganKondisiTambakId,omitempty"`
+	StatusNotifikasi                      string `json:"statusNotifikasi,omitempty"`
+}

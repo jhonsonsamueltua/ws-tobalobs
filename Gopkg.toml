@@ -57,14 +57,14 @@
   go-tests = true
   unused-packages = true
 
-# [metadata.heroku]
-#   root-package = "github.com/ws-tobalobs"
-#   go-version = "go1.12.7"
-#   install = [ "./vendor/..." ]
-#   ensure = "true"
-#   additional-tools = ["github.com/golang-migrate/migrate"]
-
 [metadata.heroku]
   root-package = "github.com/ws-tobalobs"
-  go-version = "1.12.7"
-  install = [ "./..." ]
+  go-version = "go1.12.7"
+  install = [ "./vendor/..." ]
+  ensure = "true"
+  additional-tools = ["github.com/golang-migrate/migrate"]
+
+# [metadata.heroku]
+#   root-package = "github.com/ws-tobalobs"
+#   go-version = "1.12.7"
+#   install = [ "./..." ]

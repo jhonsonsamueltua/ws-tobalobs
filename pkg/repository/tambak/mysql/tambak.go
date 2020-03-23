@@ -92,21 +92,38 @@ func (r *tambak) CreateTambak(t models.Tambak) (int64, error) {
 		log.Println("[Repository][CreateTambak][Execute] Error : ", err)
 		return 0, err
 	}
-	userID, _ := res.LastInsertId()
-	return userID, err
+	tambakId, _ := res.LastInsertId()
+	return tambakId, err
 }
 
-func (r *tambak) PostMonitorTambak(m models.MonitorTambak) error {
+func (r *tambak) PostMonitorTambak(m models.MonitorTambak) (int64, error) {
 	statement, err := r.DB.Prepare(queryInsertMonitoringTambak)
 	if err != nil {
 		log.Println("[Repository][PostMonitorTambak][Prepare] Error : ", err)
+		return 0, err
+	}
+	defer statement.Close()
+
+	res, err := statement.Exec(m.TambakId, m.PH, m.DO, m.Suhu, m.WaktuTanggal, m.Keterangan)
+	if err != nil {
+		log.Println("[Repository][PostMonitorTambak][Execute] Error : ", err)
+		return 0, err
+	}
+	monitorTambakId, err := res.LastInsertId()
+	return monitorTambakId, err
+}
+
+func (r *tambak) PostPenyimpanganKondisiTambak(m models.NotifikasiPenyimpanganKondisiTambak) error {
+	statement, err := r.DB.Prepare(queryInsertNotifikasiKondisiTambak)
+	if err != nil {
+		log.Println("[Repository][PostPenyimpanganKondisiTambak][Prepare] Error : ", err)
 		return err
 	}
 	defer statement.Close()
 
-	_, err = statement.Exec(m.TambakId, m.PH, m.DO, m.Suhu, m.WaktuTanggal, m.Keterangan)
+	_, err = statement.Exec(m.MonitorTambakId, m.PenyimpanganKondisiTambakId, m.StatusNotifikasi)
 	if err != nil {
-		log.Println("[Repository][PostMonitorTambak][Execute] Error : ", err)
+		log.Println("[Repository][PostPenyimpanganKondisiTambak][Execute] Error : ", err)
 		return err
 	}
 	return err

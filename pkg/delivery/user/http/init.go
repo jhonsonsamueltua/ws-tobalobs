@@ -15,7 +15,7 @@ func InitUserHandler(e *echo.Echo, u userUsecase.Usecase) {
 		userUsecase: u,
 	}
 
-	e.POST("user/register", handler.Register)
-	e.POST("user/login", handler.Login)
-	e.POST("user/logout", handler.Logout)
+	e.POST("/api/user/register", handler.Register)
+	e.POST("/api/user/login", handler.Login)
+	e.POST("/api/user/logout", handler.Logout)
 }
