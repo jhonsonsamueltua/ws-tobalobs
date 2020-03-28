@@ -68,10 +68,12 @@ func (d *user) Login(c echo.Context) error {
 	if ctx == nil {
 		ctx = context.Background()
 	}
+	deviceID := c.Request().Header.Get("deviceID")
+	log.Println("deviceID Login : ", deviceID)
 	username := c.FormValue("username")
 	password := c.FormValue("password")
 
-	token, err := d.userUsecase.Login(username, password)
+	token, err := d.userUsecase.Login(username, password, deviceID)
 	if err != nil {
 		resp.Data = nil
 		resp.Status = models.StatusFailed
@@ -103,7 +105,12 @@ func (d *user) Logout(c echo.Context) error {
 	}
 	token := c.Request().Header.Get("Authorization")
 	log.Println("token : ", token)
-	err := d.userUsecase.Logout(token)
+	deviceID := c.Request().Header.Get("deviceID")
+	log.Println("deviceID Logout : ", deviceID)
+	userID := c.Request().Context().Value("user")
+	userIDInt, _ := userID.(int64)
+
+	err := d.userUsecase.Logout(token, deviceID, userIDInt)
 	if err != nil {
 		resp.Data = nil
 		resp.Status = models.StatusFailed

@@ -16,16 +16,29 @@ type Responses struct {
 }
 
 type Config struct {
-	Db    DatabaseConfig `mapstructure:"database"`
-	Token TokenData
+	Database DatabaseConfig
+	Token    TokenData
+	Redis    Redis
+	Fcm      Fcm
 }
 
 type DatabaseConfig struct {
-	Conn string
+	Prod  string
+	Devel string
 }
 
 type TokenData struct {
 	Issuer    string
 	ExpiresAt time.Time
 	Key       string
+	Test      string
+}
+
+type Redis struct {
+	Prod  string
+	Devel string
+}
+
+type Fcm struct {
+	Key string
 }

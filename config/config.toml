@@ -1,6 +1,13 @@
 [database]
-    conn        = "root@tcp(127.0.0.1:3306)/tobalobs"
+    prod        = "jhonson-sth:hutagaol2020@mysql+tcp(localhost:3306)/tobalobs"
+    devel       = "root@tcp(localhost:3306)/tobalobs"
 [token]
     issuer      = "tobalobs"
     expires_at  = "time.Now().Add(time.Hour * 24).Unix()"
     key         = "asdfghjkl"
+    test        = "TEST"
+[redis]
+    prod        = "66.70.190.240:6379"
+    devel       = "localhost:6379"
+[fcm]
+    key         = "AAAA2Na2Q0M:APA91bHDEdJnN_CjOzLvpScB1DeIYv5SbGldN8-FbvsBLOkTDeyTtfwEiq8uAMvKciQPz41DfHcv2SXJLcIbs13tENnMMJmDAFyjj6vSplVdDwsbXbN4OItWAJh6B2xSD6krelEJt7tV"

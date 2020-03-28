@@ -26,9 +26,35 @@ type MonitorTambak struct {
 	Keterangan      string  `json:"keterangan,omitempty"`
 }
 
-type NotifikasiPenyimpanganKondisiTambak struct {
-	NotifikasiPenyimpanganKondisiTambakId int64  `json:"notifikasiPenyimpanganKondisiTambakId,omitempty"`
-	MonitorTambakId                       int64  `json:"monitorTambakId,omitempty"`
-	PenyimpanganKondisiTambakId           int64  `json:"penyimpanganKondisiTambakId,omitempty"`
-	StatusNotifikasi                      string `json:"statusNotifikasi,omitempty"`
+type Notifikasi struct {
+	NotifikasiID                int64  `json:"notifikasiID,omitempty"`
+	TambakID                    int64  `json:"tambakID,omitempty"`
+	GuidelineID                 int64  `json:"guidelineID,omitempty"`
+	PenyimpanganKondisiTambakID int64  `json:"penyimpanganKondisiTambakId,omitempty"`
+	Keterangan                  string `json:"keterangan,omitempty"`
+	StatusNotifikasi            string `json:"statusNotifikasi,omitempty"`
+	WaktuTanggal                string `json:"waktuTanggal,omitempty"`
+	TipeNotifikasi              string `json:"tipeNotifikasi,omitempty"`
+	NamaTambak                  string `json:"namaTambak,omitempty"`
+	AksiPenyimpangan            string `json:"aksiPenyimpangan,omitempty"`
+	KondisiPenyimpangan         string `json:"kondisiPenyimpangan,omitempty"`
+	AksiGuideline               string `json:"aksiGuideline,omitempty"`
+	KondisiGuideline            string `json:"kondisiGuideline,omitempty"`
+}
+
+type MessagePushNotif struct {
+	ID               string
+	Title            string
+	Body             string
+	StatusNotifikasi string
+	TipeNotifikasi   string
+}
+
+type NotifikasiKondisi struct {
+	NotifikasiID     int64  `json:"notifikasiID"`
+	NamaTambak       string `json:"namaTambak,omitempty"`
+	Keterangan       string `json:"keterangan,omitempty"`
+	Kondisi          string `json:"kondisi,omitempty"`
+	AksiPenyimpangan string `json:"aksiPenyimpangan,omitempty"`
+	WaktuTanggal     string `json:"waktuTanggal,omitempty"`
 }
