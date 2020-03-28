@@ -24,11 +24,20 @@ func (d *tambak) GetAllTambak(c echo.Context) error {
 	userID := c.Request().Context().Value("user") //Grab the id of the user that send the request
 	userIDInt, _ := userID.(int64)
 
-	allTambak, err := d.tambakUsecase.GetAllTambak(userIDInt)
+	allTambak, totalNotif, err := d.tambakUsecase.GetAllTambak(userIDInt)
 	if err != nil {
 		log.Println(err)
 	}
-	resp.Data = allTambak
+	type ListData struct {
+		TotalNotif int             `json:"totalNotif"`
+		Data       []models.Tambak `json:"data"`
+	}
+
+	resp.Data = ListData{
+		Data:       allTambak,
+		TotalNotif: totalNotif,
+	}
+	log.Println("Total : ", totalNotif)
 
 	resp.Status = models.StatusSucces
 	resp.Message = models.MessageSucces
@@ -189,6 +198,7 @@ func (d *tambak) PostMonitorTambak(c echo.Context) error {
 }
 
 func (d *tambak) PostPenyimpanganKondisiTambak(c echo.Context) error {
+	dt := time.Now()
 	var resp models.Responses
 	resp.Status = models.StatusFailed
 	ctx := c.Request().Context()
@@ -196,18 +206,23 @@ func (d *tambak) PostPenyimpanganKondisiTambak(c echo.Context) error {
 		ctx = context.Background()
 	}
 
-	monitorTambakId, _ := strconv.ParseInt(c.FormValue("monitorTambakID"), 10, 64)
+	userID := c.Request().Context().Value("user")
+	userIDInt, _ := userID.(int64)
+	tambakID, _ := strconv.ParseInt(c.FormValue("tambakID"), 10, 64)
 	penyimpanganKondisitambakId, _ := strconv.ParseInt(c.FormValue("penyimpanganKondisiTambakID"), 10, 64)
+	keterangan := c.FormValue("keterangan")
 
-	m := models.NotifikasiPenyimpanganKondisiTambak{}
-	m.MonitorTambakId = monitorTambakId
-	m.PenyimpanganKondisiTambakId = penyimpanganKondisitambakId
-	m.StatusNotifikasi = "unread"
+	n := models.Notifikasi{}
+	n.TambakID = tambakID
+	n.PenyimpanganKondisiTambakID = penyimpanganKondisitambakId
+	n.TipeNotifikasi = "notif-pool-condition"
+	n.Keterangan = keterangan
+	n.StatusNotifikasi = "unread"
+	n.WaktuTanggal = dt.Format("2006-01-02 15:04:05")
 
-	log.Println(m)
-
-	registrationToken := "fwhqECu_tkA:APA91bHYkhFR2RpVC2T8E9XSu62GfulKMDQI0jeC487AmmVYbCsj7RlsEi70yaGy1S4F7WLSULLs0nIW0QsmV1HVZ9MoYoXdqqHV6mmtJAViYiQqZdQZsLP_eccLuMKso6ZW0YP1pUWX"
-	err := d.tambakUsecase.PostPenyimpanganKondisiTambak(m, registrationToken)
+	//set sementara user id, karena dari raspberry tidak ada jwt token
+	userIDInt = int64(114)
+	err := d.tambakUsecase.PostPenyimpanganKondisiTambak(n, userIDInt)
 	if err != nil {
 		log.Println(err)
 		resp.Data = nil

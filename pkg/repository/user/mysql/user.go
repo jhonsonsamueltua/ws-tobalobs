@@ -2,7 +2,6 @@ package mysql
 
 import (
 	"log"
-	"time"
 
 	"github.com/ws-tobalobs/pkg/models"
 )
@@ -25,14 +24,6 @@ func (r *user) Register(m models.User) (int64, error) {
 	return userID, err
 }
 
-func (r *user) Login(username string, password string) bool {
-	// user, err := r.GetUser(username)
-	// if err != nil {
-	// 	return false
-	// }
-	return true
-}
-
 func (r *user) GetUser(username string) (models.User, error) {
 	var users = models.User{}
 	statement, err := r.DB.Prepare(querySelectUser)
@@ -46,9 +37,4 @@ func (r *user) GetUser(username string) (models.User, error) {
 	err = statement.QueryRow(username).Scan(&users.UserID, &users.Username, &users.Password, &users.Nama, &users.Alamat, &users.NoHp, &users.TanggalLahir)
 
 	return users, err
-}
-
-func (r *user) Logout(token string, exp time.Duration) error {
-	//not implement
-	return nil
 }

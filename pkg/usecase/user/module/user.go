@@ -2,6 +2,7 @@ package module
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"time"
 
@@ -36,7 +37,7 @@ func (u *user) Register(m models.User) (string, error) {
 	}
 }
 
-func (u *user) Login(username string, password string) (string, error) {
+func (u *user) Login(username string, password string, deviceID string) (string, error) {
 	var err error
 	token := ""
 	users, _ := u.userRepo.GetUser(username)
@@ -47,6 +48,15 @@ func (u *user) Login(username string, password string) (string, error) {
 		if err != nil {
 			return "", errors.New("Error Create Token")
 		}
+
+		//save deviceID to redis with key userID
+		key := fmt.Sprint("device:", users.UserID)
+		u.userRepoRedis.SaveDeviceID(key, deviceID)
+
+		//cek table notif status pending
+
+		//if exist, send push notification
+
 	} else {
 		return "", errors.New("Username or Password is wrong")
 	}
@@ -54,14 +64,19 @@ func (u *user) Login(username string, password string) (string, error) {
 	return token, err
 }
 
-func (u *user) Logout(token string) error {
+func (u *user) Logout(token, deviceID string, userID int64) error {
 	jwtClaims, err := u.jwtUsecase.ExtractClaims(token)
 	if err != nil {
 		return err
 	}
 	exp := jwtClaims["exp"]
 
+	//save token to blacklist token
 	err = u.userRepoRedis.Logout(token, getTokenRemainingValidity(exp))
+
+	//remove deviceID that use for notif
+	key := fmt.Sprint("device:", userID)
+	u.userRepoRedis.RemoveDeviceID(key, deviceID)
 
 	return err
 }

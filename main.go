@@ -3,8 +3,9 @@ package main
 import (
 	"database/sql"
 	"log"
+	"os"
 
-	"github.com/appleboy/go-fcm"
+	"firebase.google.com/go/messaging"
 	"github.com/go-redis/redis"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
@@ -15,14 +16,19 @@ import (
 	conn "github.com/ws-tobalobs/pkg/common/connection"
 	f "github.com/ws-tobalobs/pkg/common/fcm"
 	// cron "github.com/ws-tobalobs/pkg/common/cron"
+	notifDeliver "github.com/ws-tobalobs/pkg/delivery/notif/http"
 	tambakDeliver "github.com/ws-tobalobs/pkg/delivery/tambak/http"
 	userDeliver "github.com/ws-tobalobs/pkg/delivery/user/http"
 	"github.com/ws-tobalobs/pkg/models"
-	tambakFCMRepo "github.com/ws-tobalobs/pkg/repository/tambak/fcm"
+	fcmNotifRepo "github.com/ws-tobalobs/pkg/repository/notif/fcm"
+	mysqlNotifRepo "github.com/ws-tobalobs/pkg/repository/notif/mysql"
+	notifRepo "github.com/ws-tobalobs/pkg/repository/notif/mysql"
+	redisNotifRepo "github.com/ws-tobalobs/pkg/repository/notif/redis"
 	tambakRepo "github.com/ws-tobalobs/pkg/repository/tambak/mysql"
 	userRepo "github.com/ws-tobalobs/pkg/repository/user/mysql"
 	userRepoRedis "github.com/ws-tobalobs/pkg/repository/user/redis"
 	jwtUseCase "github.com/ws-tobalobs/pkg/usecase/jwt/module"
+	notifUseCase "github.com/ws-tobalobs/pkg/usecase/notif/module"
 	tambakUseCase "github.com/ws-tobalobs/pkg/usecase/tambak/module"
 	userUseCase "github.com/ws-tobalobs/pkg/usecase/user/module"
 )
@@ -30,15 +36,39 @@ import (
 var Conf *models.Config
 
 func main() {
+	var connDB, connRedis string
+	//config
 	Conf = config.InitConfig()
+
+	//environtment
+	var env string
+	var args = os.Args
+
+	if len(args) > 1 {
+		env = os.Args[1]
+	}
+
+	if env == "prod" {
+		connDB = Conf.Database.Prod
+		connRedis = Conf.Redis.Prod
+	} else {
+		connDB = Conf.Database.Devel
+		connRedis = Conf.Redis.Devel
+	}
+
+	//SSH connect
+	conn.ConnectSSH()
+
 	//DB
-	db := conn.InitDB(Conf.Db.Conn)
+	db := conn.InitDB(connDB)
 	defer db.Close()
+
 	//redis
-	redis := conn.InitRedis()
+	redis := conn.InitRedis(connRedis)
+	defer redis.Close()
+
 	//fcm
-	serverKey := "AAAA2Na2Q0M:APA91bHDEdJnN_CjOzLvpScB1DeIYv5SbGldN8-FbvsBLOkTDeyTtfwEiq8uAMvKciQPz41DfHcv2SXJLcIbs13tENnMMJmDAFyjj6vSplVdDwsbXbN4OItWAJh6B2xSD6krelEJt7tV"
-	fcm := f.InitFCM(serverKey)
+	fcm := f.InitFCM(Conf.Fcm.Key)
 
 	//http
 	e := echo.New()
@@ -47,20 +77,29 @@ func main() {
 	e.Use(middL.JwtAuthentication)
 
 	//module
-	tambak(e, db, fcm)
+	tambak(e, db, fcm, redis)
 	user(e, db, Conf, redis)
+	notif(e, db)
 
 	//Cron
 	// cron.InitCron()
 
-	log.Fatal(e.Start(":8000"))
+	log.Fatal(e.Start(":8001"))
 }
 
-func tambak(e *echo.Echo, db *sql.DB, fcm *fcm.Client) {
+func tambak(e *echo.Echo, db *sql.DB, fcm *messaging.Client, redis *redis.Client) {
 	tambakRepo := tambakRepo.InitTambakRepo(db)
-	tambakFCMRepo := tambakFCMRepo.InitTambakFCMRepo(fcm)
-	tambakUsecase := tambakUseCase.InitTambakUsecase(tambakRepo, tambakFCMRepo)
+	fcmNotifRepo := fcmNotifRepo.InitFCMRepo(fcm)
+	redisNotifRepo := redisNotifRepo.InitRedisRepo(redis)
+	mysqlNotifRepo := mysqlNotifRepo.InitNotifRepo(db)
+	tambakUsecase := tambakUseCase.InitTambakUsecase(tambakRepo, fcmNotifRepo, redisNotifRepo, mysqlNotifRepo)
 	tambakDeliver.InitTambakHandler(e, tambakUsecase)
+}
+
+func notif(e *echo.Echo, db *sql.DB) {
+	notifRepo := notifRepo.InitNotifRepo(db)
+	notifUsecase := notifUseCase.InitNotifUsecase(notifRepo)
+	notifDeliver.InitNotifHandler(e, notifUsecase)
 }
 
 func user(e *echo.Echo, db *sql.DB, conf *models.Config, redis *redis.Client) {

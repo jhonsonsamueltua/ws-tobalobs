@@ -9,10 +9,14 @@ import (
 	"github.com/ws-tobalobs/pkg/models"
 )
 
-func (u *tambak) GetAllTambak(userID int64) ([]models.Tambak, error) {
+func (u *tambak) GetAllTambak(userID int64) ([]models.Tambak, int, error) {
+	totalNotif := int(0)
 	allTambak, err := u.tambakRepo.GetAllTambak(userID)
-
-	return allTambak, err
+	if err == nil {
+		//get total notif unread
+		totalNotif = u.mysqlNotifRepo.GetTotalNofikasiUnread(userID)
+	}
+	return allTambak, totalNotif, err
 }
 
 func (u *tambak) GetTambakByID(tambakID int64, userID int64) (models.Tambak, error) {
@@ -46,10 +50,22 @@ func (u *tambak) PostMonitorTambak(m models.MonitorTambak) (int64, error) {
 	return monitorTambakId, err
 }
 
-func (u *tambak) PostPenyimpanganKondisiTambak(m models.NotifikasiPenyimpanganKondisiTambak, registrationToken string) error {
-	err := u.tambakRepo.PostPenyimpanganKondisiTambak(m)
+func (u *tambak) PostPenyimpanganKondisiTambak(n models.Notifikasi, userID int64) error {
+	notifID, err := u.tambakRepo.PostPenyimpanganKondisiTambak(n)
 	if err == nil {
-		u.tambakFCMRepo.PushNotification(registrationToken)
+		deviceIDs := u.redisNotifRepo.GetDeviceID(userID)
+		if len(deviceIDs) == 0 {
+			//if deviceID not exist in redis, update status notification to pending
+			u.tambakRepo.UpdateNotifikasiKondisiTambak(notifID)
+		} else {
+			notifIDStr := strconv.FormatInt(notifID, 10)
+			msg := models.MessagePushNotif{
+				ID:    notifIDStr,
+				Title: "Notifikasi Kondisi Tambak",
+				Body:  n.Keterangan,
+			}
+			u.fcmNotifRepo.PushNotification(deviceIDs, msg)
+		}
 	}
 
 	return err
