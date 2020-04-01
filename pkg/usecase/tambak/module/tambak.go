@@ -71,6 +71,12 @@ func (u *tambak) PostPenyimpanganKondisiTambak(n models.Notifikasi, userID int64
 	return err
 }
 
+func (u *tambak) GetAllInfo() ([]models.Info, error) {
+	allInfo, err := u.tambakRepo.GetAllInfo()
+
+	return allInfo, err
+}
+
 func execute(tambakID int64) {
 	tambakIDStr := strconv.FormatInt(tambakID, 10)
 	log.Println("./script/script.sh " + tambakIDStr)

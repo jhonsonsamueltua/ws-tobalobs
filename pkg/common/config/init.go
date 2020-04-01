@@ -11,8 +11,8 @@ import (
 
 func InitConfig() *models.Config {
 	v := viper.New()
-	v.SetConfigName("config")
-	v.AddConfigPath("./config")
+	v.SetConfigName("./config")
+	v.AddConfigPath("config")
 	v.SetConfigType("toml")
 	if err := v.ReadInConfig(); err != nil {
 		fmt.Printf("couldn't load config: %s", err)

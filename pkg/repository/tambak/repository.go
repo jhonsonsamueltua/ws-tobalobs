@@ -12,4 +12,5 @@ type Repository interface {
 	PostMonitorTambak(models.MonitorTambak) (int64, error)
 	PostPenyimpanganKondisiTambak(models.Notifikasi) (int64, error)
 	UpdateNotifikasiKondisiTambak(notifID int64)
+	GetAllInfo() ([]models.Info, error)
 }
