@@ -9,4 +9,5 @@ type Usecase interface {
 	CreateTambak(tambak models.Tambak) (int64, error)
 	PostMonitorTambak(models.MonitorTambak) (int64, error)
 	PostPenyimpanganKondisiTambak(models.Notifikasi, int64) error
+	GetAllInfo() ([]models.Info, error)
 }

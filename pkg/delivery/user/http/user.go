@@ -69,7 +69,6 @@ func (d *user) Login(c echo.Context) error {
 		ctx = context.Background()
 	}
 	deviceID := c.Request().Header.Get("deviceID")
-	log.Println("deviceID Login : ", deviceID)
 	username := c.FormValue("username")
 	password := c.FormValue("password")
 
@@ -86,7 +85,6 @@ func (d *user) Login(c echo.Context) error {
 		Token:    token,
 		Username: username,
 	}
-	log.Println("token : ", token)
 	fmt.Println("Berhasil login...")
 	resp.Data = auth
 	resp.Status = models.StatusSucces
@@ -104,9 +102,7 @@ func (d *user) Logout(c echo.Context) error {
 		ctx = context.Background()
 	}
 	token := c.Request().Header.Get("Authorization")
-	log.Println("token : ", token)
 	deviceID := c.Request().Header.Get("deviceID")
-	log.Println("deviceID Logout : ", deviceID)
 	userID := c.Request().Context().Value("user")
 	userIDInt, _ := userID.(int64)
 

@@ -56,6 +56,8 @@ func main() {
 		connRedis = Conf.Redis.Devel
 	}
 
+	log.Println(connDB)
+
 	//SSH connect
 	conn.ConnectSSH()
 
@@ -84,7 +86,7 @@ func main() {
 	//Cron
 	// cron.InitCron()
 
-	log.Fatal(e.Start(":8001"))
+	log.Fatal(e.Start(":8000"))
 }
 
 func tambak(e *echo.Echo, db *sql.DB, fcm *messaging.Client, redis *redis.Client) {

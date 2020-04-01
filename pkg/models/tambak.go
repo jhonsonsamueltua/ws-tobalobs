@@ -58,3 +58,9 @@ type NotifikasiKondisi struct {
 	AksiPenyimpangan string `json:"aksiPenyimpangan,omitempty"`
 	WaktuTanggal     string `json:"waktuTanggal,omitempty"`
 }
+
+type Info struct {
+	InfoID     int64 `json:"infoID"`
+	Judul      int64 `json:"judul"`
+	Penjelasan int64 `json:"penjelasan"`
+}

@@ -142,3 +142,28 @@ func (r *tambak) UpdateNotifikasiKondisiTambak(notifID int64) {
 		log.Println("[Repository][UpdateNotifikasiKondisiTambak][Execute] Error : ", err)
 	}
 }
+
+func (r *tambak) GetAllInfo() ([]models.Info, error) {
+	allInfo := []models.Info{}
+	statement, err := r.DB.Prepare(queryGetAllInfo)
+	if err != nil {
+		log.Println("[Repository][GetAllInfo][Prepare] Error : ", err)
+		return allInfo, err
+	}
+	rows, err := statement.Query()
+	if err != nil {
+		log.Println("Repository error : ", err)
+		return allInfo, err
+	}
+
+	for rows.Next() {
+		info := models.Info{}
+		err := rows.Scan(&info.InfoID, &info.Judul, &info.Penjelasan)
+		if err != nil {
+			log.Println(err)
+		}
+		allInfo = append(allInfo, info)
+	}
+
+	return allInfo, nil
+}
