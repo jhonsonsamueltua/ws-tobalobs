@@ -9,4 +9,5 @@ const (
 	queryUpdateNotifikasiKondisiTambak = `UPDATE notifikasi SET status_notifikasi = "pending" WHERE notifikasi_id = ?`
 	queryInsertTambak                  = `INSERT INTO tambak (user_id, nama_tambak, panjang, lebar, jenis_budidaya, tanggal_mulai_budidaya, usia_lobster, jumlah_lobster, jumlah_lobster_jantan, jumlah_lobster_betina, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 	queryGetAllInfo                    = `SELECT info_id, judul, penjelasan FROM info`
+	queryGetMonitorTambak              = `SELECT monitor_tambak_id, ph, do, suhu, waktu_tanggal, keterangan FROM monitor_tambak WHERE tambak_id = ? ORDER BY waktu_tanggal ASC`
 )

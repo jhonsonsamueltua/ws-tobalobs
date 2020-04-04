@@ -167,3 +167,28 @@ func (r *tambak) GetAllInfo() ([]models.Info, error) {
 
 	return allInfo, nil
 }
+
+func (r *tambak) GetMonitorTambak(tambakID int64) ([]models.MonitorTambak, error) {
+	monitor := []models.MonitorTambak{}
+	statement, err := r.DB.Prepare(queryGetMonitorTambak)
+	if err != nil {
+		log.Println("[Repository][GetMonitorTambak][Prepare] Error : ", err)
+		return monitor, err
+	}
+	rows, err := statement.Query(tambakID)
+	if err != nil {
+		log.Println("Repository error : ", err)
+		return monitor, err
+	}
+
+	for rows.Next() {
+		m := models.MonitorTambak{}
+		err := rows.Scan(&m.MonitorTambakId, &m.PH, &m.DO, &m.Suhu, &m.WaktuTanggal, &m.Keterangan)
+		if err != nil {
+			log.Println(err)
+		}
+		monitor = append(monitor, m)
+	}
+
+	return monitor, nil
+}

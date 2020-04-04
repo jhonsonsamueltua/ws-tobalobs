@@ -77,6 +77,12 @@ func (u *tambak) GetAllInfo() ([]models.Info, error) {
 	return allInfo, err
 }
 
+func (u *tambak) GetMonitorTambak(tambakID int64) ([]models.MonitorTambak, error) {
+	m, err := u.tambakRepo.GetMonitorTambak(tambakID)
+
+	return m, err
+}
+
 func execute(tambakID int64) {
 	tambakIDStr := strconv.FormatInt(tambakID, 10)
 	log.Println("./script/script.sh " + tambakIDStr)

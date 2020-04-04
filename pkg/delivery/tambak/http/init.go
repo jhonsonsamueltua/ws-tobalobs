@@ -20,6 +20,7 @@ func InitTambakHandler(e *echo.Echo, u tambakUsecase.Usecase) {
 	e.GET("/api/tambak/:tambakID", handler.GetTambakByID)
 	e.GET("/api/tambak/last-monitor/:tambakID", handler.GetLastMonitorTambak)
 	e.GET("/api/info", handler.GetAllInfo)
+	e.GET("/api/tambak/monitor/:tambakID", handler.GetMonitorTambak)
 	e.POST("/api/tambak/monitor", handler.PostMonitorTambak)
 	e.POST("/api/tambak/monitor-menyimpang", handler.PostPenyimpanganKondisiTambak)
 	e.POST("/api/tambak", handler.CreateTambak)

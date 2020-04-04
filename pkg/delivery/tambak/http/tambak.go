@@ -251,3 +251,31 @@ func (d *tambak) GetAllInfo(c echo.Context) error {
 	c.Response().Header().Set(`X-Cursor`, "header")
 	return c.JSON(http.StatusOK, resp)
 }
+
+func (d *tambak) GetMonitorTambak(c echo.Context) error {
+	var resp models.Responses
+	resp.Status = models.StatusFailed
+
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	tambakID, _ := strconv.ParseInt(c.Param("tambakID"), 10, 64)
+
+	m, err := d.tambakUsecase.GetMonitorTambak(tambakID)
+	if err != nil {
+		log.Println(err)
+		resp.Data = nil
+		resp.Status = models.StatusFailed
+		resp.Message = err.Error()
+		c.Response().Header().Set(`X-Cursor`, "header")
+		return c.JSON(http.StatusInternalServerError, resp)
+	}
+
+	resp.Data = m
+	resp.Status = models.StatusSucces
+	resp.Message = models.MessageSucces
+	c.Response().Header().Set(`X-Cursor`, "header")
+	return c.JSON(http.StatusOK, resp)
+}
