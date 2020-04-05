@@ -96,6 +96,22 @@ func (r *tambak) CreateTambak(t models.Tambak) (int64, error) {
 	return tambakId, err
 }
 
+func (r *tambak) UpdateTambak(m models.Tambak) error {
+	statement, err := r.DB.Prepare(QueryUpdateTambak)
+	if err != nil {
+		log.Println("[Repository][UpdateTambak][Prepare] Error : ", err)
+		return err
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(m.NamaTambak, m.Panjang, m.Lebar, m.JenisBudidaya, m.UsiaLobster, m.JumlahLobster, m.JumlahLobsterJantan, m.JumlahLobsterBetina, m.TambakID)
+	if err != nil {
+		log.Println("[Repository][UpdateTambak][Execute] Error : ", err)
+		return err
+	}
+	return err
+}
+
 func (r *tambak) PostMonitorTambak(m models.MonitorTambak) (int64, error) {
 	statement, err := r.DB.Prepare(queryInsertMonitoringTambak)
 	if err != nil {
@@ -166,4 +182,54 @@ func (r *tambak) GetAllInfo() ([]models.Info, error) {
 	}
 
 	return allInfo, nil
+}
+
+func (r *tambak) GetAllPanduan() ([]models.Panduan, error) {
+	panduan := []models.Panduan{}
+	statement, err := r.DB.Prepare(queryGetAllPanduan)
+	if err != nil {
+		log.Println("[Repository][GetAllPanduan][Prepare] Error : ", err)
+		return panduan, err
+	}
+	rows, err := statement.Query()
+	if err != nil {
+		log.Println("Repository error : ", err)
+		return panduan, err
+	}
+
+	for rows.Next() {
+		p := models.Panduan{}
+		err := rows.Scan(&p.PanduanAplikasiID, &p.Judul, &p.Penjelasan)
+		if err != nil {
+			log.Println(err)
+		}
+		panduan = append(panduan, p)
+	}
+
+	return panduan, nil
+}
+
+func (r *tambak) GetMonitorTambak(tambakID int64, tanggal string) ([]models.MonitorTambak, error) {
+	monitor := []models.MonitorTambak{}
+	statement, err := r.DB.Prepare(queryGetMonitorTambak)
+	if err != nil {
+		log.Println("[Repository][GetMonitorTambak][Prepare] Error : ", err)
+		return monitor, err
+	}
+	rows, err := statement.Query(tambakID, tanggal)
+	if err != nil {
+		log.Println("Repository error : ", err)
+		return monitor, err
+	}
+
+	for rows.Next() {
+		m := models.MonitorTambak{}
+		err := rows.Scan(&m.MonitorTambakId, &m.PH, &m.DO, &m.Suhu, &m.WaktuTanggal, &m.Keterangan)
+		if err != nil {
+			log.Println(err)
+		}
+		monitor = append(monitor, m)
+	}
+
+	return monitor, nil
 }

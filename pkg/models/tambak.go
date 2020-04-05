@@ -60,7 +60,13 @@ type NotifikasiKondisi struct {
 }
 
 type Info struct {
-	InfoID     int64 `json:"infoID"`
-	Judul      int64 `json:"judul"`
-	Penjelasan int64 `json:"penjelasan"`
+	InfoID     int64  `json:"infoID"`
+	Judul      string `json:"judul"`
+	Penjelasan string `json:"penjelasan"`
+}
+
+type Panduan struct {
+	PanduanAplikasiID int64  `json:"panduanAplikasiID"`
+	Judul             string `json:"judul"`
+	Penjelasan        string `json:"penjelasan"`
 }

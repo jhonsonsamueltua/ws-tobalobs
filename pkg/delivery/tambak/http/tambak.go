@@ -144,6 +144,53 @@ func (d *tambak) CreateTambak(c echo.Context) error {
 	return c.JSON(http.StatusOK, resp)
 }
 
+func (d *tambak) UpdateTambak(c echo.Context) error {
+	var resp models.Responses
+	resp.Status = models.StatusFailed
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	tambakID, _ := strconv.ParseInt(c.Param("tambakID"), 10, 64)
+	namaTambak := c.FormValue("namaTambak")
+	panjang, _ := strconv.ParseFloat(c.FormValue("panjang"), 64)
+	lebar, _ := strconv.ParseFloat(c.FormValue("lebar"), 64)
+	jenisBudidaya := c.FormValue("jenisBudidaya")
+
+	usiaLobster, _ := strconv.Atoi(c.FormValue("usiaLobster"))
+	jumlahLobster, _ := strconv.Atoi(c.FormValue("jumlahLobster"))
+	jumlahLobsterJantan, _ := strconv.Atoi(c.FormValue("jumlahLobsterJantan"))
+	jumlahLobsterBetina, _ := strconv.Atoi(c.FormValue("jumlahLobsterBetina"))
+
+	t := models.Tambak{}
+	t.TambakID = tambakID
+	t.NamaTambak = namaTambak
+	t.Panjang = panjang
+	t.Lebar = lebar
+	t.JenisBudidaya = jenisBudidaya
+	// t.TanggalMulaiBudidaya = dt.Format("2006-01-02")
+	t.UsiaLobster = usiaLobster
+	t.JumlahLobster = jumlahLobster
+	t.JumlahLobsterJantan = jumlahLobsterJantan
+	t.JumlahLobsterBetina = jumlahLobsterBetina
+	// t.Status = "aktif"
+
+	err := d.tambakUsecase.UpdateTambak(t)
+	if err != nil {
+		log.Println(err)
+		resp.Status = models.StatusFailed
+		resp.Message = err.Error()
+		c.Response().Header().Set(`X-Cursor`, "header")
+		return c.JSON(http.StatusInternalServerError, resp)
+	}
+
+	resp.Status = models.StatusSucces
+	resp.Message = models.MessageSucces
+	c.Response().Header().Set(`X-Cursor`, "header")
+	return c.JSON(http.StatusOK, resp)
+}
+
 func (d *tambak) PostMonitorTambak(c echo.Context) error {
 	dt := time.Now()
 	var resp models.Responses
@@ -246,6 +293,61 @@ func (d *tambak) GetAllInfo(c echo.Context) error {
 	}
 
 	resp.Data = allInfo
+	resp.Status = models.StatusSucces
+	resp.Message = models.MessageSucces
+	c.Response().Header().Set(`X-Cursor`, "header")
+	return c.JSON(http.StatusOK, resp)
+}
+
+func (d *tambak) GetAllPanduan(c echo.Context) error {
+	var resp models.Responses
+	resp.Status = models.StatusFailed
+
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	panduan, err := d.tambakUsecase.GetAllPanduan()
+	if err != nil {
+		log.Println(err)
+		resp.Data = nil
+		resp.Status = models.StatusFailed
+		resp.Message = err.Error()
+		c.Response().Header().Set(`X-Cursor`, "header")
+		return c.JSON(http.StatusInternalServerError, resp)
+	}
+
+	resp.Data = panduan
+	resp.Status = models.StatusSucces
+	resp.Message = models.MessageSucces
+	c.Response().Header().Set(`X-Cursor`, "header")
+	return c.JSON(http.StatusOK, resp)
+}
+
+func (d *tambak) GetMonitorTambak(c echo.Context) error {
+	var resp models.Responses
+	resp.Status = models.StatusFailed
+
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	tambakID, _ := strconv.ParseInt(c.Param("tambakID"), 10, 64)
+	tanggal := c.FormValue("tanggal")
+
+	m, err := d.tambakUsecase.GetMonitorTambak(tambakID, tanggal)
+	if err != nil {
+		log.Println(err)
+		resp.Data = nil
+		resp.Status = models.StatusFailed
+		resp.Message = err.Error()
+		c.Response().Header().Set(`X-Cursor`, "header")
+		return c.JSON(http.StatusInternalServerError, resp)
+	}
+
+	resp.Data = m
 	resp.Status = models.StatusSucces
 	resp.Message = models.MessageSucces
 	c.Response().Header().Set(`X-Cursor`, "header")
