@@ -40,6 +40,12 @@ func (u *tambak) CreateTambak(t models.Tambak) (int64, error) {
 	return tambakID, err
 }
 
+func (u *tambak) UpdateTambak(t models.Tambak) error {
+	err := u.tambakRepo.UpdateTambak(t)
+
+	return err
+}
+
 func (u *tambak) PostMonitorTambak(m models.MonitorTambak) (int64, error) {
 	monitorTambakId, err := u.tambakRepo.PostMonitorTambak(m)
 	// if err != nil {
@@ -77,8 +83,14 @@ func (u *tambak) GetAllInfo() ([]models.Info, error) {
 	return allInfo, err
 }
 
-func (u *tambak) GetMonitorTambak(tambakID int64) ([]models.MonitorTambak, error) {
-	m, err := u.tambakRepo.GetMonitorTambak(tambakID)
+func (u *tambak) GetAllPanduan() ([]models.Panduan, error) {
+	panduan, err := u.tambakRepo.GetAllPanduan()
+
+	return panduan, err
+}
+
+func (u *tambak) GetMonitorTambak(tambakID int64, tanggal string) ([]models.MonitorTambak, error) {
+	m, err := u.tambakRepo.GetMonitorTambak(tambakID, tanggal)
 
 	return m, err
 }

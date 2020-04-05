@@ -11,5 +11,6 @@ type Delivery interface {
 	PostMonitorTambak(c echo.Context) error
 	PostPenyimpanganKondisiTambak(c echo.Context) error
 	GetAllInfo(c echo.Context) error
+	GetAllPanduan(c echo.Context) error
 	GetMonitorTambak(c echo.Context) error
 }

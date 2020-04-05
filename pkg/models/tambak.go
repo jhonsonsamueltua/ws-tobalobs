@@ -64,3 +64,9 @@ type Info struct {
 	Judul      string `json:"judul"`
 	Penjelasan string `json:"penjelasan"`
 }
+
+type Panduan struct {
+	PanduanAplikasiID int64  `json:"panduanAplikasiID"`
+	Judul             string `json:"judul"`
+	Penjelasan        string `json:"penjelasan"`
+}
