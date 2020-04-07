@@ -335,7 +335,7 @@ func (d *tambak) GetMonitorTambak(c echo.Context) error {
 	}
 
 	tambakID, _ := strconv.ParseInt(c.Param("tambakID"), 10, 64)
-	tanggal := c.FormValue("tanggal")
+	tanggal := c.Param("tanggal")
 
 	m, err := d.tambakUsecase.GetMonitorTambak(tambakID, tanggal)
 	if err != nil {
