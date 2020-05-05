@@ -36,7 +36,7 @@ func (d *notif) GetAllNotif(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, resp)
 	}
 	resp.Data = allNotif
-	log.Println(allNotif)
+	
 	resp.Status = models.StatusSucces
 	resp.Message = models.MessageSucces
 	c.Response().Header().Set(`X-Cursor`, "header")

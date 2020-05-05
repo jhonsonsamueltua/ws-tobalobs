@@ -34,7 +34,7 @@ func (u *tambak) GetLastMonitorTambak(tambakID int64) (models.MonitorTambak, err
 func (u *tambak) CreateTambak(t models.Tambak) (int64, error) {
 	tambakID, err := u.tambakRepo.CreateTambak(t)
 	if err == nil {
-		execute(tambakID)
+		// execute(tambakID)
 	}
 
 	return tambakID, err
@@ -56,8 +56,9 @@ func (u *tambak) PostMonitorTambak(m models.MonitorTambak) (int64, error) {
 	return monitorTambakId, err
 }
 
-func (u *tambak) PostPenyimpanganKondisiTambak(n models.Notifikasi, userID int64) error {
+func (u *tambak) PostPenyimpanganKondisiTambak(n models.Notifikasi) error {
 	notifID, err := u.tambakRepo.PostPenyimpanganKondisiTambak(n)
+	userID := u.tambakRepo.GetUserIDByTambak(n.TambakID)
 	if err == nil {
 		deviceIDs := u.redisNotifRepo.GetDeviceID(userID)
 		if len(deviceIDs) == 0 {

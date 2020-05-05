@@ -19,21 +19,21 @@ const (
 		LEFT JOIN tambak as t
 		ON t.tambak_id = n.tambak_id
 		WHERE t.user_id = ?
-		ORDER BY n.notifikasi_id ASC
+		ORDER BY n.notifikasi_id DESC
 	`
 
 	queryGetAllNotifPerTambak = `
 		SELECT notifikasi_id, tipe_notifikasi, keterangan, status_notifikasi, tipe_notifikasi
 		FROM notifikasi
 		WHERE tambak_id = ?
-		ORDER BY notifikasi_id ASC
+		ORDER BY notifikasi_id DESC
 	`
 
 	queryGetAllNotifUnreadPerTambak = `
 		SELECT notifikasi_id, tipe_notifikasi, keterangan, status_notifikasi, tipe_notifikasi
 		FROM notifikasi
 		WHERE tambak_id = ? AND (status_notifikasi = "unread" OR status_notifikasi = "pending")
-		ORDER BY notifikasi_id ASC
+		ORDER BY notifikasi_id DESC
 	`
 
 	queryGetDetailNotif = `
@@ -46,7 +46,6 @@ const (
 		LEFT JOIN guideline as g
 		ON n.guideline_id = g.guideline_id
 		WHERE n.notifikasi_id = ?
-		ORDER BY n.notifikasi_id ASC
 	`
 
 	queryUpdateStatusNotifikasi = `
@@ -60,4 +59,6 @@ const (
 		on n.tambak_id = t.tambak_id
 		WHERE t.user_id = ? AND n.status_notifikasi = "unread"
 	`
+
+	querySaveNotifGuideline = `INSERT INTO notifikasi (tambak_id, guideline_id, tipe_notifikasi, keterangan, status_notifikasi, waktu_tanggal) VALUES (?, ?, ?, ?, ?, ?)`
 )

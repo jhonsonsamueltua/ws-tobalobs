@@ -17,13 +17,13 @@ type Tambak struct {
 
 type MonitorTambak struct {
 	MonitorTambakId int64   `json:"monitorTambakID,omitempty"`
-	TambakId        int64   `json:"tambakID,omitempty"`
-	NamaTambak      string  `json:"namaTambak,omitempty"`
-	PH              float64 `json:"ph,omitempty"`
-	DO              float64 `json:"do,omitempty"`
-	Suhu            float64 `json:"suhu,omitempty"`
-	WaktuTanggal    string  `json:"waktuTanggal,omitempty"`
-	Keterangan      string  `json:"keterangan,omitempty"`
+	TambakId        int64   `json:"tambakID"`
+	NamaTambak      string  `json:"namaTambak"`
+	PH              float64 `json:"ph"`
+	DO              float64 `json:"do"`
+	Suhu            float64 `json:"suhu"`
+	WaktuTanggal    string  `json:"waktuTanggal"`
+	Keterangan      string  `json:"keterangan"`
 }
 
 type Notifikasi struct {

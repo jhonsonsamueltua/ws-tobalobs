@@ -24,7 +24,7 @@ func (self *ViaSSHDialer) Dial(addr string) (net.Conn, error) {
 
 func ConnectSSH() {
 	sshHost := "66.70.190.240" // SSH Server Hostname/IP
-	sshPort := 22            // SSH Port
+	sshPort := 22              // SSH Port
 	sshUser := "ubuntu"        // SSH Username
 	sshPass := "WKDW3eQr"      // Empty string for no password
 	// dbUser := "jhonson-sth"    // DB username

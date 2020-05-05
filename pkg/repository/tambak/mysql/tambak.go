@@ -55,6 +55,30 @@ func (r *tambak) GetTambakByID(tambakID int64, userID int64) (models.Tambak, err
 	return tambak, nil
 }
 
+func (r *tambak) GetUserIDByTambak(tambakID int64) int64 {
+	var userID int64
+	statement, err := r.DB.Prepare(queryGetUserIDByTambak)
+	if err != nil {
+		log.Println("[Repository][GetUserIDByTambak][Prepare] Error : ", err)
+		return userID
+	}
+	rows, err := statement.Query(tambakID)
+	if err != nil {
+		log.Println("Repository error : ", err)
+		return userID
+	}
+
+	for rows.Next() {
+		err := rows.Scan(&userID)
+		if err != nil {
+			log.Println("[Repository][GetUserIDByTambak][Scan] Error : ", err)
+			return userID
+		}
+	}
+
+	return userID
+}
+
 func (r *tambak) GetLastMonitorTambak(tambakID int64) (models.MonitorTambak, error) {
 	monitor := models.MonitorTambak{}
 	statement, err := r.DB.Prepare(queryGetLastMonitorTambak)
@@ -232,4 +256,36 @@ func (r *tambak) GetMonitorTambak(tambakID int64, tanggal string) ([]models.Moni
 	}
 
 	return monitor, nil
+}
+
+func (r *tambak) GetAllTambakID() ([]int64, []int64, []string, error) {
+	userID := []int64{}
+	tambakID := []int64{}
+	namaTambak := []string{}
+
+	statement, err := r.DB.Prepare(queryGetAllTambakID)
+	if err != nil {
+		log.Println("[Repository][GetAllTambakID][Prepare] Error : ", err)
+		return userID, tambakID, namaTambak, err
+	}
+	rows, err := statement.Query()
+	if err != nil {
+		log.Println("Repository error : ", err)
+		return userID, tambakID, namaTambak, err
+	}
+
+	for rows.Next() {
+		var uID int64
+		var tID int64
+		var nama string
+		err := rows.Scan(&tID, &uID, &nama)
+		if err != nil {
+			log.Println(err)
+		}
+		userID = append(userID, uID)
+		tambakID = append(tambakID, tID)
+		namaTambak = append(namaTambak, nama)
+	}
+
+	return userID, tambakID, namaTambak, err
 }

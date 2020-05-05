@@ -240,9 +240,8 @@ func (d *tambak) PostPenyimpanganKondisiTambak(c echo.Context) error {
 		ctx = context.Background()
 	}
 
-	userID := c.Request().Context().Value("user")
-	userIDInt, _ := userID.(int64)
 	tambakID, _ := strconv.ParseInt(c.FormValue("tambakID"), 10, 64)
+	// userID, _ := strconv.ParseInt(c.FormValue("userID"), 10, 64)
 	penyimpanganKondisitambakId, _ := strconv.ParseInt(c.FormValue("penyimpanganKondisiTambakID"), 10, 64)
 	keterangan := c.FormValue("keterangan")
 
@@ -254,9 +253,7 @@ func (d *tambak) PostPenyimpanganKondisiTambak(c echo.Context) error {
 	n.StatusNotifikasi = "unread"
 	n.WaktuTanggal = dt.Format("2006-01-02 15:04:05")
 
-	//set sementara user id, karena dari raspberry tidak ada jwt token
-	userIDInt = int64(114)
-	err := d.tambakUsecase.PostPenyimpanganKondisiTambak(n, userIDInt)
+	err := d.tambakUsecase.PostPenyimpanganKondisiTambak(n)
 	if err != nil {
 		log.Println(err)
 		resp.Data = nil

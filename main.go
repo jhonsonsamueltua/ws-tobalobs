@@ -27,6 +27,7 @@ import (
 	tambakRepo "github.com/ws-tobalobs/pkg/repository/tambak/mysql"
 	userRepo "github.com/ws-tobalobs/pkg/repository/user/mysql"
 	userRepoRedis "github.com/ws-tobalobs/pkg/repository/user/redis"
+	cronUseCase "github.com/ws-tobalobs/pkg/usecase/cron/module"
 	jwtUseCase "github.com/ws-tobalobs/pkg/usecase/jwt/module"
 	notifUseCase "github.com/ws-tobalobs/pkg/usecase/notif/module"
 	tambakUseCase "github.com/ws-tobalobs/pkg/usecase/tambak/module"
@@ -56,8 +57,6 @@ func main() {
 		connRedis = Conf.Redis.Devel
 	}
 
-	log.Println(connDB)
-
 	//SSH connect
 	conn.ConnectSSH()
 
@@ -82,9 +81,7 @@ func main() {
 	tambak(e, db, fcm, redis)
 	user(e, db, Conf, redis)
 	notif(e, db)
-
-	//Cron
-	// cron.InitCron()
+	cron(db, fcm, redis)
 
 	log.Fatal(e.Start(":8000"))
 }
@@ -110,4 +107,13 @@ func user(e *echo.Echo, db *sql.DB, conf *models.Config, redis *redis.Client) {
 	jwtUsecase := jwtUseCase.InitJWT(conf)
 	userUsecase := userUseCase.InitUserUsecase(userRepo, jwtUsecase, conf, userRepoRedis)
 	userDeliver.InitUserHandler(e, userUsecase)
+}
+
+func cron(db *sql.DB, fcm *messaging.Client, redis *redis.Client) {
+	tambakRepo := tambakRepo.InitTambakRepo(db)
+	fcmNotifRepo := fcmNotifRepo.InitFCMRepo(fcm)
+	redisNotifRepo := redisNotifRepo.InitRedisRepo(redis)
+	mysqlNotifRepo := mysqlNotifRepo.InitNotifRepo(db)
+	cron := cronUseCase.InitCronUsecase(tambakRepo, fcmNotifRepo, redisNotifRepo, mysqlNotifRepo)
+	cron.InitCron()
 }
