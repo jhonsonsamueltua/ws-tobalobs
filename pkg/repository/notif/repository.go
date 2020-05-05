@@ -17,4 +17,5 @@ type RepositoryMysql interface {
 	GetDetailNotif(notifID int64) (models.Notifikasi, error)
 	UpdateStatusNotifikasi(notifID int64)
 	GetTotalNofikasiUnread(userID int64) int
+	SaveNotifGuideline(n models.Notifikasi) (int64, error)
 }

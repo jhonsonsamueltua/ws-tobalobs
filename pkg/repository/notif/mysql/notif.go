@@ -112,3 +112,20 @@ func (r *notif) GetTotalNofikasiUnread(userID int64) int {
 	}
 	return totalNotif
 }
+
+func (r *notif) SaveNotifGuideline(n models.Notifikasi) (int64, error) {
+	statement, err := r.DB.Prepare(querySaveNotifGuideline)
+	if err != nil {
+		log.Println("[Repository][SaveNotifGuideline][Prepare] Error : ", err)
+		return 0, err
+	}
+	defer statement.Close()
+
+	res, err := statement.Exec(n.TambakID, n.GuidelineID, n.TipeNotifikasi, n.Keterangan, n.StatusNotifikasi, n.WaktuTanggal)
+	if err != nil {
+		log.Println("[Repository][SaveNotifGuideline][Execute] Error : ", err)
+		return 0, err
+	}
+	notifID, err := res.LastInsertId()
+	return notifID, err
+}

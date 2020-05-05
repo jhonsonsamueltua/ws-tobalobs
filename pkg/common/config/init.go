@@ -12,7 +12,7 @@ import (
 func InitConfig() *models.Config {
 	v := viper.New()
 	v.SetConfigName("config")
-	v.AddConfigPath("../../../src/github.com/ws-tobalobs/config/")
+	v.AddConfigPath("/var/www/go/src/github.com/ws-tobalobs/config/")
 	v.SetConfigType("toml")
 	if err := v.ReadInConfig(); err != nil {
 		fmt.Printf("couldn't load config: %s", err)

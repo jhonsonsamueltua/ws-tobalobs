@@ -16,4 +16,6 @@ type Repository interface {
 	GetAllInfo() ([]models.Info, error)
 	GetAllPanduan() ([]models.Panduan, error)
 	GetMonitorTambak(tambakID int64, tanggal string) ([]models.MonitorTambak, error)
+	GetAllTambakID() ([]int64, []int64, []string, error)
+	GetUserIDByTambak(tambakID int64) int64
 }
