@@ -2,7 +2,6 @@ package http
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -35,8 +34,6 @@ func (d *user) Register(c echo.Context) error {
 		TanggalLahir: tanggalLahir,
 	}
 
-	fmt.Printf("%+v\n", user)
-
 	token, err := d.userUsecase.Register(user)
 	if err != nil {
 		log.Println(err)
@@ -52,7 +49,6 @@ func (d *user) Register(c echo.Context) error {
 		Username: username,
 	}
 
-	fmt.Println("Berhasil register...")
 	resp.Data = auth
 	resp.Status = models.StatusSucces
 	resp.Message = models.MessageSucces
@@ -146,6 +142,80 @@ func (d *user) GetDetailUser(c echo.Context) error {
 	user.Password = ""
 	resp.Data = user
 
+	resp.Status = models.StatusSucces
+	resp.Message = models.MessageSucces
+	c.Response().Header().Set(`X-Cursor`, "header")
+	return c.JSON(http.StatusOK, resp)
+}
+
+func (d *user) UpdateUser(c echo.Context) error {
+	var resp models.Responses
+	resp.Status = models.StatusFailed
+
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	userID := c.Request().Context().Value("user") //Grab the id of the user that send the request
+	userIDInt, _ := userID.(int64)
+	username := c.FormValue("username")
+	nama := c.FormValue("nama")
+	tanggalLahir := c.FormValue("tanggalLahir")
+	noHp := c.FormValue("noHp")
+	alamat := c.FormValue("alamat")
+
+	user := models.User{
+		UserID:       userIDInt,
+		Username:     username,
+		Nama:         nama,
+		Alamat:       alamat,
+		NoHp:         noHp,
+		TanggalLahir: tanggalLahir,
+	}
+
+	err := d.userUsecase.UpdateUser(user)
+	if err != nil {
+		log.Println(err)
+		resp.Data = nil
+		resp.Status = models.StatusFailed
+		resp.Message = err.Error()
+		c.Response().Header().Set(`X-Cursor`, "header")
+		return c.JSON(http.StatusInternalServerError, resp)
+	}
+
+	resp.Data = nil
+	resp.Status = models.StatusSucces
+	resp.Message = models.MessageSucces
+	c.Response().Header().Set(`X-Cursor`, "header")
+	return c.JSON(http.StatusOK, resp)
+}
+
+func (d *user) UpdatePassword(c echo.Context) error {
+	var resp models.Responses
+	resp.Status = models.StatusFailed
+
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	userID := c.Request().Context().Value("user") //Grab the id of the user that send the request
+	userIDInt, _ := userID.(int64)
+	pass := c.FormValue("password")
+	newPass := c.FormValue("newPassword")
+
+	err := d.userUsecase.UpdatePassword(pass, newPass, userIDInt)
+	if err != nil {
+		log.Println(err)
+		resp.Data = nil
+		resp.Status = models.StatusFailed
+		resp.Message = err.Error()
+		c.Response().Header().Set(`X-Cursor`, "header")
+		return c.JSON(http.StatusInternalServerError, resp)
+	}
+
+	resp.Data = nil
 	resp.Status = models.StatusSucces
 	resp.Message = models.MessageSucces
 	c.Response().Header().Set(`X-Cursor`, "header")

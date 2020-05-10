@@ -53,3 +53,35 @@ func (r *user) GetDetailUser(userID int64) (models.User, error) {
 
 	return users, err
 }
+
+func (r *user) UpdateUser(m models.User) error {
+	statement, err := r.DB.Prepare(QueryUpdateUser)
+	if err != nil {
+		log.Println("[Repository][UpdateUser][Prepare] Error : ", err)
+		return err
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(m.Username, m.Nama, m.Alamat, m.NoHp, m.TanggalLahir, m.UserID)
+	if err != nil {
+		log.Println("[Repository][UpdateUser][Execute] Error : ", err)
+		return err
+	}
+	return err
+}
+
+func (r *user) UpdatePassword(newPass string, userID int64) error {
+	statement, err := r.DB.Prepare(QueryUpdatePassword)
+	if err != nil {
+		log.Println("[Repository][UpdatePassword][Prepare] Error : ", err)
+		return err
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(newPass, userID)
+	if err != nil {
+		log.Println("[Repository][UpdatePassword][Execute] Error : ", err)
+		return err
+	}
+	return err
+}
