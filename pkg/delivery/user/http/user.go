@@ -85,7 +85,7 @@ func (d *user) Login(c echo.Context) error {
 		Token:    token,
 		Username: username,
 	}
-	fmt.Println("Berhasil login...")
+
 	resp.Data = auth
 	resp.Status = models.StatusSucces
 	resp.Message = models.MessageSucces
@@ -115,8 +115,37 @@ func (d *user) Logout(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, resp)
 	}
 
-	fmt.Println("Berhasil logout...")
 	resp.Data = nil
+	resp.Status = models.StatusSucces
+	resp.Message = models.MessageSucces
+	c.Response().Header().Set(`X-Cursor`, "header")
+	return c.JSON(http.StatusOK, resp)
+}
+
+func (d *user) GetDetailUser(c echo.Context) error {
+	var resp models.Responses
+	resp.Status = models.StatusFailed
+
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	userID := c.Request().Context().Value("user") //Grab the id of the user that send the request
+	userIDInt, _ := userID.(int64)
+
+	user, err := d.userUsecase.GetDetailUser(userIDInt)
+	if err != nil {
+		log.Println(err)
+		resp.Data = nil
+		resp.Status = models.StatusFailed
+		resp.Message = err.Error()
+		c.Response().Header().Set(`X-Cursor`, "header")
+		return c.JSON(http.StatusInternalServerError, resp)
+	}
+	user.Password = ""
+	resp.Data = user
+
 	resp.Status = models.StatusSucces
 	resp.Message = models.MessageSucces
 	c.Response().Header().Set(`X-Cursor`, "header")

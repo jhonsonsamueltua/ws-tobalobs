@@ -81,6 +81,11 @@ func (u *user) Logout(token, deviceID string, userID int64) error {
 	return err
 }
 
+func (u *user) GetDetailUser(userID int64) (models.User, error) {
+	user, err := u.userRepo.GetDetailUser(userID)
+	return user, err
+}
+
 func getTokenRemainingValidity(timestamp interface{}) int {
 	if validity, ok := timestamp.(float64); ok {
 		tm := time.Unix(int64(validity), 0)
