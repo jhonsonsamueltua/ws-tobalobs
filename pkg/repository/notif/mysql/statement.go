@@ -18,21 +18,21 @@ const (
 		FROM notifikasi as n
 		LEFT JOIN tambak as t
 		ON t.tambak_id = n.tambak_id
-		WHERE t.user_id = ?
+		WHERE t.user_id = ? AND status_notifikasi != "pending"
 		ORDER BY n.notifikasi_id DESC
 	`
 
 	queryGetAllNotifPerTambak = `
 		SELECT notifikasi_id, tipe_notifikasi, keterangan, status_notifikasi, tipe_notifikasi
 		FROM notifikasi
-		WHERE tambak_id = ?
+		WHERE tambak_id = ? AND status_notifikasi != "pending"
 		ORDER BY notifikasi_id DESC
 	`
 
 	queryGetAllNotifUnreadPerTambak = `
 		SELECT notifikasi_id, tipe_notifikasi, keterangan, status_notifikasi, tipe_notifikasi
 		FROM notifikasi
-		WHERE tambak_id = ? AND (status_notifikasi = "unread" OR status_notifikasi = "pending")
+		WHERE tambak_id = ? AND status_notifikasi = "unread"
 		ORDER BY notifikasi_id DESC
 	`
 
