@@ -7,4 +7,6 @@ type Usecase interface {
 	Login(username string, password string, deviceID string) (string, error)
 	Logout(token, deviceID string, userID int64) error
 	GetDetailUser(userID int64) (models.User, error)
+	UpdateUser(models.User) error
+	UpdatePassword(pass, newPass string, userID int64) error
 }

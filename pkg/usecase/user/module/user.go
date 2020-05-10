@@ -41,8 +41,8 @@ func (u *user) Login(username string, password string, deviceID string) (string,
 	var err error
 	token := ""
 	users, _ := u.userRepo.GetUser(username)
-	passwordTes := bcrypt.CompareHashAndPassword([]byte(users.Password), []byte(password))
-	if users.UserID != 0 && passwordTes == nil {
+	err = bcrypt.CompareHashAndPassword([]byte(users.Password), []byte(password))
+	if users.UserID != 0 && err == nil {
 		//login success
 		token, err = u.jwtUsecase.GenerateJWT(u.conf, users.UserID)
 		if err != nil {
@@ -84,6 +84,36 @@ func (u *user) Logout(token, deviceID string, userID int64) error {
 func (u *user) GetDetailUser(userID int64) (models.User, error) {
 	user, err := u.userRepo.GetDetailUser(userID)
 	return user, err
+}
+
+func (u *user) UpdateUser(m models.User) error {
+	var err error
+	users, _ := u.userRepo.GetUser(m.Username)
+
+	if (models.User{}) != users && users.UserID != m.UserID {
+		err = errors.New("Username already exist")
+	} else {
+		err = u.userRepo.UpdateUser(m)
+	}
+
+	return err
+}
+
+func (u *user) UpdatePassword(pass, newPass string, userID int64) error {
+	users, _ := u.userRepo.GetDetailUser(userID)
+	err := bcrypt.CompareHashAndPassword([]byte(users.Password), []byte(pass))
+	if err != nil {
+		err = errors.New("Current password is wrong")
+	} else {
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newPass), bcrypt.DefaultCost)
+		if len(hashedPassword) != 0 || err == nil {
+			err = u.userRepo.UpdatePassword(string(hashedPassword[:]), userID)
+		} else {
+			err = errors.New("Error hash password")
+		}
+	}
+
+	return err
 }
 
 func getTokenRemainingValidity(timestamp interface{}) int {
