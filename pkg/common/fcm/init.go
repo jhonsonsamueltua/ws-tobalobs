@@ -11,7 +11,7 @@ import (
 )
 
 func InitFCM(serverKey string) *messaging.Client {
-	opt := option.WithCredentialsFile("../ws-tobalobs/config/serviceAccountKey.json")
+	opt := option.WithCredentialsFile("/var/www/go/src/github.com/ws-tobalobs/config/serviceAccountKey.json")
 	app, err := firebase.NewApp(context.Background(), nil, opt)
 	if err != nil {
 		fmt.Println(fmt.Errorf("error initializing app: %v", err))
