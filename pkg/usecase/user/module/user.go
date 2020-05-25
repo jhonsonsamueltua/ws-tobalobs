@@ -37,7 +37,7 @@ func (u *user) Register(m models.User) (string, error) {
 	}
 }
 
-func (u *user) Login(username string, password string, deviceID string) (string, error) {
+func (u *user) Login(username string, password string, deviceID string) (string, string, error) {
 	var err error
 	token := ""
 	users, _ := u.userRepo.GetUser(username)
@@ -46,7 +46,7 @@ func (u *user) Login(username string, password string, deviceID string) (string,
 		//login success
 		token, err = u.jwtUsecase.GenerateJWT(u.conf, users.UserID)
 		if err != nil {
-			return "", errors.New("Error Create Token")
+			return "", "", errors.New("Error Create Token")
 		}
 
 		//save deviceID to redis with key userID
@@ -58,10 +58,10 @@ func (u *user) Login(username string, password string, deviceID string) (string,
 		//if exist, send push notification
 
 	} else {
-		return "", errors.New("Username or Password is wrong")
+		return "", "", errors.New("Username or Password is wrong")
 	}
 
-	return token, err
+	return token, users.Role, err
 }
 
 func (u *user) Logout(token, deviceID string, userID int64) error {

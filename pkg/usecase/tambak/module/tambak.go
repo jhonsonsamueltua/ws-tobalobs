@@ -48,10 +48,6 @@ func (u *tambak) UpdateTambak(t models.Tambak) error {
 
 func (u *tambak) PostMonitorTambak(m models.MonitorTambak) (int64, error) {
 	monitorTambakId, err := u.tambakRepo.PostMonitorTambak(m)
-	// if err != nil {
-	// 	log.Println("[Restoran][Usecase][CreateResto] Error : ", err)
-	// 	return err
-	// }
 
 	return monitorTambakId, err
 }

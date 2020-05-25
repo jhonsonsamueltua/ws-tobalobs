@@ -32,6 +32,7 @@ func (d *user) Register(c echo.Context) error {
 		Alamat:       alamat,
 		NoHp:         noHp,
 		TanggalLahir: tanggalLahir,
+		Role:         "peternak",
 	}
 
 	token, err := d.userUsecase.Register(user)
@@ -47,6 +48,7 @@ func (d *user) Register(c echo.Context) error {
 	auth := models.AuthResponse{
 		Token:    token,
 		Username: username,
+		Role:     user.Role,
 	}
 
 	resp.Data = auth
@@ -68,7 +70,7 @@ func (d *user) Login(c echo.Context) error {
 	username := c.FormValue("username")
 	password := c.FormValue("password")
 
-	token, err := d.userUsecase.Login(username, password, deviceID)
+	token, role, err := d.userUsecase.Login(username, password, deviceID)
 	if err != nil {
 		resp.Data = nil
 		resp.Status = models.StatusFailed
@@ -80,6 +82,7 @@ func (d *user) Login(c echo.Context) error {
 	auth := models.AuthResponse{
 		Token:    token,
 		Username: username,
+		Role:     role,
 	}
 
 	resp.Data = auth

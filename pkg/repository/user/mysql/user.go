@@ -15,7 +15,7 @@ func (r *user) Register(m models.User) (int64, error) {
 
 	defer statement.Close()
 
-	res, err := statement.Exec(m.Username, m.Password, m.Nama, m.Alamat, m.NoHp, m.TanggalLahir)
+	res, err := statement.Exec(m.Username, m.Password, m.Nama, m.Alamat, m.NoHp, m.TanggalLahir, m.Role)
 	if err != nil {
 		log.Println("[Repository][Register][Execute] Error : ", err)
 		return 0, err
@@ -34,7 +34,7 @@ func (r *user) GetUser(username string) (models.User, error) {
 
 	defer statement.Close()
 
-	err = statement.QueryRow(username).Scan(&users.UserID, &users.Username, &users.Password, &users.Nama, &users.Alamat, &users.NoHp, &users.TanggalLahir)
+	err = statement.QueryRow(username).Scan(&users.UserID, &users.Username, &users.Password, &users.Nama, &users.Alamat, &users.NoHp, &users.TanggalLahir, &users.Role)
 
 	return users, err
 }

@@ -18,4 +18,5 @@ func InitNotifHandler(e *echo.Echo, u notifUsecase.Usecase) {
 	//register handler
 	e.GET("/api/notif/:tambakID/:type", handler.GetAllNotif)
 	e.GET("/api/notif/detail/:notifID", handler.GetDetailNotif)
+	e.POST("/api/push-notif", handler.PushNotif)
 }

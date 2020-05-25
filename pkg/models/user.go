@@ -10,12 +10,13 @@ type User struct {
 	Alamat       string `json:alamat`
 	NoHp         string `json:noHp`
 	TanggalLahir string `json:tanggalLahir`
+	Role         string `jsom:role`
 }
 
 type AuthResponse struct {
 	Token    string `json:"token"`
 	Username string `json:"username"`
-	// Role     string `json:"role"`
+	Role     string `json:"role"`
 }
 
 type Token struct {
