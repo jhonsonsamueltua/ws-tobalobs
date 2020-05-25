@@ -13,6 +13,9 @@ type Tambak struct {
 	JumlahLobsterJantan  int     `json:"jumlahLobsterJantan,omitempty"`
 	JumlahLobsterBetina  int     `json:"jumlahLobsterBetina,omitempty"`
 	Status               string  `json:"status,omitempty"`
+	PakanPagi            string  `json:"pakanPagi,omitempty"`
+	PakanSore            string  `json:"pakanSore,omitempty"`
+	GantiAir             string  `json:"gantiAir,omitempty"`
 }
 
 type MonitorTambak struct {

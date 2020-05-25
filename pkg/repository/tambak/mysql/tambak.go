@@ -111,7 +111,7 @@ func (r *tambak) CreateTambak(t models.Tambak) (int64, error) {
 	}
 	defer statement.Close()
 
-	res, err := statement.Exec(t.UserID, t.NamaTambak, t.Panjang, t.Lebar, t.JenisBudidaya, t.TanggalMulaiBudidaya, t.UsiaLobster, t.JumlahLobster, t.JumlahLobsterJantan, t.JumlahLobsterBetina, t.Status)
+	res, err := statement.Exec(t.UserID, t.NamaTambak, t.Panjang, t.Lebar, t.JenisBudidaya, t.TanggalMulaiBudidaya, t.UsiaLobster, t.JumlahLobster, t.JumlahLobsterJantan, t.JumlahLobsterBetina, t.Status, t.PakanPagi, t.PakanSore, t.GantiAir)
 	if err != nil {
 		log.Println("[Repository][CreateTambak][Execute] Error : ", err)
 		return 0, err
