@@ -33,9 +33,24 @@ func (u *tambak) GetLastMonitorTambak(tambakID int64) (models.MonitorTambak, err
 
 func (u *tambak) CreateTambak(t models.Tambak) (int64, error) {
 	tambakID, err := u.tambakRepo.CreateTambak(t)
-	if err == nil {
-		// execute(tambakID)
-	}
+	// if err == nil {
+	// remote raspberry
+	// execute(tambakID)
+
+	//store notif guideline to db
+	// loc, _ := time.LoadLocation("Asia/Jakarta")
+	// now := time.Now().In(loc)
+
+	// var pemindahanInduk, pemisahanInduk, pemberianPakanSayur, pemberianPakanKeong, panenBenih, panenKonsumsi time.Time
+
+	// if t.JenisBudidaya == "pembenihan" {
+	// 	pemindahanInduk = now.AddDate(0, 0, 14)
+
+	// } else {
+
+	// }
+	// log.Println("pemindahanInduk : ", pemindahanInduk.Format("2006-01-02 07:00:00"))
+	// }
 
 	return tambakID, err
 }

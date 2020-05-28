@@ -94,7 +94,8 @@ func (d *tambak) GetLastMonitorTambak(c echo.Context) error {
 }
 
 func (d *tambak) CreateTambak(c echo.Context) error {
-	dt := time.Now()
+	loc, _ := time.LoadLocation("Asia/Jakarta")
+	dt := time.Now().In(loc)
 	var resp models.Responses
 	resp.Status = models.StatusFailed
 	ctx := c.Request().Context()
@@ -198,7 +199,8 @@ func (d *tambak) UpdateTambak(c echo.Context) error {
 }
 
 func (d *tambak) PostMonitorTambak(c echo.Context) error {
-	dt := time.Now()
+	loc, _ := time.LoadLocation("Asia/Jakarta")
+	dt := time.Now().In(loc)
 	var resp models.Responses
 	resp.Status = models.StatusFailed
 	ctx := c.Request().Context()
@@ -238,7 +240,8 @@ func (d *tambak) PostMonitorTambak(c echo.Context) error {
 }
 
 func (d *tambak) PostPenyimpanganKondisiTambak(c echo.Context) error {
-	dt := time.Now()
+	loc, _ := time.LoadLocation("Asia/Jakarta")
+	dt := time.Now().In(loc)
 	var resp models.Responses
 	resp.Status = models.StatusFailed
 	ctx := c.Request().Context()

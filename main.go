@@ -22,7 +22,6 @@ import (
 	"github.com/ws-tobalobs/pkg/models"
 	fcmNotifRepo "github.com/ws-tobalobs/pkg/repository/notif/fcm"
 	mysqlNotifRepo "github.com/ws-tobalobs/pkg/repository/notif/mysql"
-	notifRepo "github.com/ws-tobalobs/pkg/repository/notif/mysql"
 	redisNotifRepo "github.com/ws-tobalobs/pkg/repository/notif/redis"
 	tambakRepo "github.com/ws-tobalobs/pkg/repository/tambak/mysql"
 	userRepo "github.com/ws-tobalobs/pkg/repository/user/mysql"
@@ -80,7 +79,7 @@ func main() {
 	//module
 	tambak(e, db, fcm, redis)
 	user(e, db, Conf, redis)
-	notif(e, db)
+	notif(e, db, fcm, redis)
 	cron(db, fcm, redis)
 
 	log.Fatal(e.Start(":8000"))
@@ -95,9 +94,12 @@ func tambak(e *echo.Echo, db *sql.DB, fcm *messaging.Client, redis *redis.Client
 	tambakDeliver.InitTambakHandler(e, tambakUsecase)
 }
 
-func notif(e *echo.Echo, db *sql.DB) {
-	notifRepo := notifRepo.InitNotifRepo(db)
-	notifUsecase := notifUseCase.InitNotifUsecase(notifRepo)
+func notif(e *echo.Echo, db *sql.DB, fcm *messaging.Client, redis *redis.Client) {
+	tambakRepo := tambakRepo.InitTambakRepo(db)
+	fcmNotifRepo := fcmNotifRepo.InitFCMRepo(fcm)
+	redisNotifRepo := redisNotifRepo.InitRedisRepo(redis)
+	mysqlNotifRepo := mysqlNotifRepo.InitNotifRepo(db)
+	notifUsecase := notifUseCase.InitNotifUsecase(tambakRepo, fcmNotifRepo, redisNotifRepo, mysqlNotifRepo)
 	notifDeliver.InitNotifHandler(e, notifUsecase)
 }
 
