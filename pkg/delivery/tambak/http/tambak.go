@@ -250,7 +250,6 @@ func (d *tambak) PostPenyimpanganKondisiTambak(c echo.Context) error {
 	}
 
 	tambakID, _ := strconv.ParseInt(c.FormValue("tambakID"), 10, 64)
-	// userID, _ := strconv.ParseInt(c.FormValue("userID"), 10, 64)
 	penyimpanganKondisitambakId, _ := strconv.ParseInt(c.FormValue("penyimpanganKondisiTambakID"), 10, 64)
 	keterangan := c.FormValue("keterangan")
 

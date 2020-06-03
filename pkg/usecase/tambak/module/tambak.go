@@ -5,6 +5,7 @@ import (
 	"log"
 	"os/exec"
 	"strconv"
+	"time"
 
 	"github.com/ws-tobalobs/pkg/models"
 )
@@ -33,24 +34,96 @@ func (u *tambak) GetLastMonitorTambak(tambakID int64) (models.MonitorTambak, err
 
 func (u *tambak) CreateTambak(t models.Tambak) (int64, error) {
 	tambakID, err := u.tambakRepo.CreateTambak(t)
-	// if err == nil {
-	// remote raspberry
-	// execute(tambakID)
+	if err == nil {
+		// remote raspberry
+		// execute(tambakID)
 
-	//store notif guideline to db
-	// loc, _ := time.LoadLocation("Asia/Jakarta")
-	// now := time.Now().In(loc)
+		//store notif guideline to db
+		loc, _ := time.LoadLocation("Asia/Jakarta")
+		now := time.Now().In(loc)
 
-	// var pemindahanInduk, pemisahanInduk, pemberianPakanSayur, pemberianPakanKeong, panenBenih, panenKonsumsi time.Time
+		var pemindahanInduk, pemisahanInduk, pemberianPakanSayur, pemberianPakanKeong, panenBenih, panenKonsumsi time.Time
+		n := models.Notifikasi{
+			TambakID:         tambakID,
+			TipeNotifikasi:   "notif-guideline",
+			StatusNotifikasi: "waiting",
+		}
 
-	// if t.JenisBudidaya == "pembenihan" {
-	// 	pemindahanInduk = now.AddDate(0, 0, 14)
+		if t.JenisBudidaya == "pembenihan" {
+			//pemindahan induk
+			pemindahanInduk = now.AddDate(0, 0, 14)
+			n.GuidelineID = 4
+			n.Keterangan = "Pemindahan induk"
+			n.WaktuTanggal = pemindahanInduk.Format("2006-01-02 07:00:00")
+			_, err := u.mysqlNotifRepo.SaveNotifGuideline(n)
+			if err != nil {
+				log.Println(err)
+			}
+			//pemisahan induk
+			pemisahanInduk = pemindahanInduk.AddDate(0, 0, 45)
+			n.GuidelineID = 5
+			n.Keterangan = "Pemisahan induk dari anakan (telur menetas dan turun anak"
+			n.WaktuTanggal = pemisahanInduk.Format("2006-01-02 07:00:00")
+			_, err = u.mysqlNotifRepo.SaveNotifGuideline(n)
+			if err != nil {
+				log.Println(err)
+			}
+			//panen benih
+			panenBenih = pemindahanInduk.AddDate(0, 2, 0)
+			n.GuidelineID = 8
+			n.Keterangan = "Panen benih lobster untuk benih"
+			n.WaktuTanggal = panenBenih.Format("2006-01-02 07:00:00 ")
+			_, err = u.mysqlNotifRepo.SaveNotifGuideline(n)
+			if err != nil {
+				log.Println(err)
+			}
 
-	// } else {
+		} else {
+			//pemberian pakan sayuran
+			lamaBudidaya := 8 - t.UsiaLobster
+			for i := 1; i <= (lamaBudidaya * 2); i++ {
+				if i == 1 {
+					pemberianPakanSayur = now.AddDate(0, 0, 14)
+				} else {
+					pemberianPakanSayur = pemberianPakanSayur.AddDate(0, 0, 14)
+				}
+				n.GuidelineID = 6
+				n.Keterangan = "Pemberian pakan sayuran"
+				n.WaktuTanggal = pemberianPakanSayur.Format("2006-01-02 07:00:00")
+				_, err := u.mysqlNotifRepo.SaveNotifGuideline(n)
+				if err != nil {
+					log.Println(err)
+				}
+			}
 
-	// }
-	// log.Println("pemindahanInduk : ", pemindahanInduk.Format("2006-01-02 07:00:00"))
-	// }
+			//pemberian pakan keong
+			for i := 1; i <= (lamaBudidaya * 2); i++ {
+				if i == 1 {
+					pemberianPakanKeong = now.AddDate(0, 1, 0)
+				} else {
+					pemberianPakanKeong = pemberianPakanKeong.AddDate(0, 1, 0)
+				}
+				n.GuidelineID = 7
+				n.Keterangan = "Pemberian pakan keong"
+				n.WaktuTanggal = pemberianPakanKeong.Format("2006-01-02 07:00:00")
+				_, err := u.mysqlNotifRepo.SaveNotifGuideline(n)
+				if err != nil {
+					log.Println(err)
+				}
+			}
+
+			//panen konsumsi
+			panenKonsumsi = now.AddDate(0, lamaBudidaya, 0)
+			n.GuidelineID = 8
+			n.Keterangan = "Panen lobster pembesaran"
+			n.WaktuTanggal = panenKonsumsi.Format("2006-01-02 07:00:00")
+			_, err = u.mysqlNotifRepo.SaveNotifGuideline(n)
+			if err != nil {
+				log.Println(err)
+			}
+
+		}
+	}
 
 	return tambakID, err
 }

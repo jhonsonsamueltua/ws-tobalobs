@@ -84,9 +84,20 @@ func (d *notif) PushNotif(c echo.Context) error {
 	typeNotif := c.FormValue("type")
 	tambakID := c.FormValue("tambakID")
 	tambakIDInt, _ := strconv.ParseInt(tambakID, 10, 16)
-	log.Println(tambakIDInt)
-	resp.Data = typeNotif
+	userID := c.Request().Context().Value("user")
+	userIDInt, _ := userID.(int64)
 
+	notif, err := d.notifUsecase.SaveNotif(userIDInt, tambakIDInt, typeNotif)
+	if err != nil {
+		log.Println(err)
+		resp.Data = nil
+		resp.Status = models.StatusFailed
+		resp.Message = err.Error()
+		c.Response().Header().Set(`X-Cursor`, "header")
+		return c.JSON(http.StatusInternalServerError, resp)
+	}
+
+	resp.Data = notif
 	resp.Status = models.StatusSucces
 	resp.Message = models.MessageSucces
 	c.Response().Header().Set(`X-Cursor`, "header")

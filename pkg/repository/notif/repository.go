@@ -18,4 +18,5 @@ type RepositoryMysql interface {
 	UpdateStatusNotifikasi(notifID int64)
 	GetTotalNofikasiUnread(userID int64) int
 	SaveNotifGuideline(n models.Notifikasi) (int64, error)
+	GetNotifWaiting(waktu string) ([]models.Notifikasi, error)
 }

@@ -22,6 +22,14 @@ const (
 		ORDER BY n.notifikasi_id DESC
 	`
 
+	queryGetAllNotifWaiting = `
+		SELECT n.notifikasi_id, n.tambak_id, t.user_id, n.guideline_id,  t.nama_tambak, n.keterangan
+		FROM notifikasi as n
+		LEFT JOIN tambak as t
+		ON t.tambak_id = n.tambak_id 
+		WHERE status_notifikasi = "waiting" AND waktu_tanggal = ?
+	`
+
 	queryGetAllNotifPerTambak = `
 		SELECT notifikasi_id, tipe_notifikasi, keterangan, status_notifikasi, tipe_notifikasi
 		FROM notifikasi
