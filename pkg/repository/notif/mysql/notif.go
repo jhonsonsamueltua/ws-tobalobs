@@ -46,6 +46,33 @@ func (r *notif) GetAllNotif(userID int64, tambakID int64, typeNotif string) ([]m
 	return allNotif, nil
 }
 
+func (r *notif) GetNotifWaiting(waktu string) ([]models.Notifikasi, error) {
+	allNotif := []models.Notifikasi{}
+
+	statement, err := r.DB.Prepare(queryGetAllNotifWaiting)
+	if err != nil {
+		log.Println("[Repository][GetNotifWaiting][Prepare] Error : ", err)
+		return allNotif, err
+	}
+
+	rows, err := statement.Query(waktu)
+	if err != nil {
+		log.Println("Repository error : ", err)
+		return allNotif, err
+	}
+
+	for rows.Next() {
+		notif := models.Notifikasi{}
+		err := rows.Scan(&notif.NotifikasiID, &notif.TambakID, &notif.UserID, &notif.GuidelineID, &notif.NamaTambak, &notif.Keterangan)
+		if err != nil {
+			log.Println(err)
+		}
+		allNotif = append(allNotif, notif)
+	}
+
+	return allNotif, err
+}
+
 func (r *notif) GetDetailNotif(notifID int64) (models.Notifikasi, error) {
 	notif := models.Notifikasi{}
 	statement, err := r.DB.Prepare(queryGetDetailNotif)

@@ -12,8 +12,10 @@ import (
 
 func (u *cron) InitCron() {
 	cr := c.New()
-	cr.AddFunc("0 7 * * *", func() { u.CronPakan("pagi") })
-	cr.AddFunc("0 17 * * *", func() { u.CronPakan("sore") })
+	// cr.AddFunc("*/1 * * * *", func() { u.CronNotifGuideline() })
+
+	// cr.AddFunc("0 7 * * *", func() { u.CronPakan("pagi") })
+	// cr.AddFunc("0 17 * * *", func() { u.CronPakan("sore") })
 	// cr.AddFunc("0 7 */3 * *", func() { log.Println("ganti air") })
 	log.Println("start Cron...")
 	cr.Start()
@@ -63,4 +65,30 @@ func (u *cron) CronPakan(waktu string) error {
 	}
 
 	return err
+}
+
+func (u *cron) CronNotifGuideline() error {
+	loc, _ := time.LoadLocation("Asia/Jakarta")
+	now := time.Now().In(loc)
+
+	notif, _ := u.mysqlNotifRepo.GetNotifWaiting(now.Format("2006-01-02 15:04:05"))
+	if len(notif) > 0 {
+		for i := 0; i < len(notif); i++ {
+			deviceIDs := u.redisNotifRepo.GetDeviceID(notif[i].UserID)
+			if len(deviceIDs) == 0 {
+				//if deviceID not exist in redis, update status notification to pending
+				u.tambakRepo.UpdateNotifikasiKondisiTambak(notif[i].NotifikasiID)
+			} else {
+				notifIDStr := strconv.FormatInt(notif[i].NotifikasiID, 10)
+				msg := models.MessagePushNotif{
+					ID:    notifIDStr,
+					Title: notif[i].NamaTambak,
+					Body:  notif[i].Keterangan,
+				}
+				u.fcmNotifRepo.PushNotification(deviceIDs, msg)
+			}
+		}
+	}
+
+	return nil
 }

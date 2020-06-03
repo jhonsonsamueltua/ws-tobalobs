@@ -32,6 +32,7 @@ type MonitorTambak struct {
 type Notifikasi struct {
 	NotifikasiID                int64  `json:"notifikasiID,omitempty"`
 	TambakID                    int64  `json:"tambakID,omitempty"`
+	UserID                      int64  `json:"userID,omitempty"`
 	GuidelineID                 int64  `json:"guidelineID,omitempty"`
 	PenyimpanganKondisiTambakID int64  `json:"penyimpanganKondisiTambakId,omitempty"`
 	Keterangan                  string `json:"keterangan,omitempty"`
@@ -46,11 +47,11 @@ type Notifikasi struct {
 }
 
 type MessagePushNotif struct {
-	ID               string
-	Title            string
-	Body             string
-	StatusNotifikasi string
-	TipeNotifikasi   string
+	ID               string `json:"notifikasiID,omitempty"`
+	Title            string `json:"title,omitempty"`
+	Body             string `json:"body,omitempty"`
+	StatusNotifikasi string `json:"statusNotifikasi,omitempty"`
+	TipeNotifikasi   string `json:"tipeNotifikasi,omitempty"`
 }
 
 type NotifikasiKondisi struct {
