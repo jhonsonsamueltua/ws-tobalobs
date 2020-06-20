@@ -47,7 +47,7 @@ func (u *notif) PushNotif(userID, tambakID int64, typeNotif string) error {
 		deviceIDs := u.redisNotifRepo.GetDeviceID(userID)
 		if len(deviceIDs) == 0 {
 			//if deviceID not exist in redis, update status notification to pending
-			u.tambakRepo.UpdateNotifikasiKondisiTambak(nID)
+			u.tambakRepo.UpdateNotifikasiKondisiTambak("pending", nID)
 		} else {
 			notifIDStr := strconv.FormatInt(nID, 10)
 			msg := models.MessagePushNotif{

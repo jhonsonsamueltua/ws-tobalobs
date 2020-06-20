@@ -170,14 +170,14 @@ func (r *tambak) PostPenyimpanganKondisiTambak(n models.Notifikasi) (int64, erro
 	return notifID, err
 }
 
-func (r *tambak) UpdateNotifikasiKondisiTambak(notifID int64) {
+func (r *tambak) UpdateNotifikasiKondisiTambak(status string, notifID int64) {
 	statement, err := r.DB.Prepare(queryUpdateNotifikasiKondisiTambak)
 	if err != nil {
 		log.Println("[Repository][UpdateNotifikasiKondisiTambak][Prepare] Error : ", err)
 	}
 	defer statement.Close()
 
-	_, err = statement.Exec(notifID)
+	_, err = statement.Exec(status, notifID)
 	if err != nil {
 		log.Println("[Repository][UpdateNotifikasiKondisiTambak][Execute] Error : ", err)
 	}

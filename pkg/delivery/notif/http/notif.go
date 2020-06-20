@@ -72,7 +72,7 @@ func (d *notif) GetDetailNotif(c echo.Context) error {
 	return c.JSON(http.StatusOK, resp)
 }
 
-func (d *notif) PushNotif(c echo.Context) error {
+func (d *notif) SaveNotif(c echo.Context) error {
 	var resp models.Responses
 	resp.Status = models.StatusFailed
 

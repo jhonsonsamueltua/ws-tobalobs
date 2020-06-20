@@ -97,7 +97,7 @@ func (u *tambak) CreateTambak(t models.Tambak) (int64, error) {
 			}
 
 			//pemberian pakan keong
-			for i := 1; i <= (lamaBudidaya * 2); i++ {
+			for i := 1; i <= lamaBudidaya; i++ {
 				if i == 1 {
 					pemberianPakanKeong = now.AddDate(0, 1, 0)
 				} else {
@@ -147,7 +147,7 @@ func (u *tambak) PostPenyimpanganKondisiTambak(n models.Notifikasi) error {
 		deviceIDs := u.redisNotifRepo.GetDeviceID(userID)
 		if len(deviceIDs) == 0 {
 			//if deviceID not exist in redis, update status notification to pending
-			u.tambakRepo.UpdateNotifikasiKondisiTambak(notifID)
+			u.tambakRepo.UpdateNotifikasiKondisiTambak("pending", notifID)
 		} else {
 			notifIDStr := strconv.FormatInt(notifID, 10)
 			msg := models.MessagePushNotif{

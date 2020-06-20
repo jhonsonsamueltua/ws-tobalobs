@@ -12,7 +12,9 @@ import (
 
 func (u *cron) InitCron() {
 	cr := c.New()
-	// cr.AddFunc("*/1 * * * *", func() { u.CronNotifGuideline() })
+	cr.AddFunc("* 7 * * *", func() { u.CronNotifGuideline() })   //setiap jam 7:00
+	cr.AddFunc("* 17 * * *", func() { u.CronNotifGuideline() })  //setiap jam 17:00
+	cr.AddFunc("30 18 * * *", func() { u.CronNotifGuideline() }) //setiap jam 18:30
 
 	// cr.AddFunc("0 7 * * *", func() { u.CronPakan("pagi") })
 	// cr.AddFunc("0 17 * * *", func() { u.CronPakan("sore") })
@@ -52,7 +54,7 @@ func (u *cron) CronPakan(waktu string) error {
 		deviceIDs := u.redisNotifRepo.GetDeviceID(userID[i])
 		if len(deviceIDs) == 0 {
 			//if deviceID not exist in redis, update status notification to pending
-			u.tambakRepo.UpdateNotifikasiKondisiTambak(nID)
+			u.tambakRepo.UpdateNotifikasiKondisiTambak("pending", nID)
 		} else {
 			notifIDStr := strconv.FormatInt(nID, 10)
 			msg := models.MessagePushNotif{
@@ -77,7 +79,7 @@ func (u *cron) CronNotifGuideline() error {
 			deviceIDs := u.redisNotifRepo.GetDeviceID(notif[i].UserID)
 			if len(deviceIDs) == 0 {
 				//if deviceID not exist in redis, update status notification to pending
-				u.tambakRepo.UpdateNotifikasiKondisiTambak(notif[i].NotifikasiID)
+				u.tambakRepo.UpdateNotifikasiKondisiTambak("pending", notif[i].NotifikasiID)
 			} else {
 				notifIDStr := strconv.FormatInt(notif[i].NotifikasiID, 10)
 				msg := models.MessagePushNotif{
@@ -86,6 +88,7 @@ func (u *cron) CronNotifGuideline() error {
 					Body:  notif[i].Keterangan,
 				}
 				u.fcmNotifRepo.PushNotification(deviceIDs, msg)
+				u.tambakRepo.UpdateNotifikasiKondisiTambak("unread", notif[i].NotifikasiID) //update status ke unread
 			}
 		}
 	}
