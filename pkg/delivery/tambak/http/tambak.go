@@ -304,6 +304,90 @@ func (d *tambak) GetAllInfo(c echo.Context) error {
 	return c.JSON(http.StatusOK, resp)
 }
 
+func (d *tambak) CreateInfo(c echo.Context) error {
+	var resp models.Responses
+	resp.Status = models.StatusFailed
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	judul := c.FormValue("judul")
+	penjelasan := c.FormValue("penjelasan")
+
+	i := models.Info{}
+	i.Judul = judul
+	i.Penjelasan = penjelasan
+
+	err := d.tambakUsecase.CreateInfo(i)
+	if err != nil {
+		resp.Data = nil
+		resp.Message = err.Error()
+		c.Response().Header().Set(`X-Cursor`, "header")
+		return c.JSON(http.StatusInternalServerError, resp)
+	}
+
+	resp.Status = models.StatusSucces
+	resp.Message = models.MessageSucces
+	c.Response().Header().Set(`X-Cursor`, "header")
+	return c.JSON(http.StatusOK, resp)
+}
+
+func (d *tambak) UpdateInfo(c echo.Context) error {
+	var resp models.Responses
+	resp.Status = models.StatusFailed
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	infoID, _ := strconv.ParseInt(c.Param("infoID"), 10, 64)
+	judul := c.FormValue("judul")
+	penjelasan := c.FormValue("penjelasan")
+
+	i := models.Info{}
+	i.InfoID = infoID
+	i.Judul = judul
+	i.Penjelasan = penjelasan
+
+	err := d.tambakUsecase.UpdateInfo(i)
+	if err != nil {
+		resp.Data = nil
+		resp.Message = err.Error()
+		c.Response().Header().Set(`X-Cursor`, "header")
+		return c.JSON(http.StatusInternalServerError, resp)
+	}
+
+	resp.Status = models.StatusSucces
+	resp.Message = models.MessageSucces
+	c.Response().Header().Set(`X-Cursor`, "header")
+	return c.JSON(http.StatusOK, resp)
+}
+
+func (d *tambak) DeleteInfo(c echo.Context) error {
+	var resp models.Responses
+	resp.Status = models.StatusFailed
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	infoID, _ := strconv.ParseInt(c.Param("infoID"), 10, 64)
+
+	err := d.tambakUsecase.DeleteInfo(infoID)
+	if err != nil {
+		resp.Data = nil
+		resp.Message = err.Error()
+		c.Response().Header().Set(`X-Cursor`, "header")
+		return c.JSON(http.StatusInternalServerError, resp)
+	}
+
+	resp.Status = models.StatusSucces
+	resp.Message = models.MessageSucces
+	c.Response().Header().Set(`X-Cursor`, "header")
+	return c.JSON(http.StatusOK, resp)
+}
+
 func (d *tambak) GetAllPanduan(c echo.Context) error {
 	var resp models.Responses
 	resp.Status = models.StatusFailed
@@ -324,6 +408,90 @@ func (d *tambak) GetAllPanduan(c echo.Context) error {
 	}
 
 	resp.Data = panduan
+	resp.Status = models.StatusSucces
+	resp.Message = models.MessageSucces
+	c.Response().Header().Set(`X-Cursor`, "header")
+	return c.JSON(http.StatusOK, resp)
+}
+
+func (d *tambak) CreatePanduan(c echo.Context) error {
+	var resp models.Responses
+	resp.Status = models.StatusFailed
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	judul := c.FormValue("judul")
+	penjelasan := c.FormValue("penjelasan")
+
+	p := models.Panduan{}
+	p.Judul = judul
+	p.Penjelasan = penjelasan
+
+	err := d.tambakUsecase.CreatePanduan(p)
+	if err != nil {
+		resp.Data = nil
+		resp.Message = err.Error()
+		c.Response().Header().Set(`X-Cursor`, "header")
+		return c.JSON(http.StatusInternalServerError, resp)
+	}
+
+	resp.Status = models.StatusSucces
+	resp.Message = models.MessageSucces
+	c.Response().Header().Set(`X-Cursor`, "header")
+	return c.JSON(http.StatusOK, resp)
+}
+
+func (d *tambak) UpdatePanduan(c echo.Context) error {
+	var resp models.Responses
+	resp.Status = models.StatusFailed
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	panduanID, _ := strconv.ParseInt(c.Param("panduanAplikasiID"), 10, 64)
+	judul := c.FormValue("judul")
+	penjelasan := c.FormValue("penjelasan")
+
+	p := models.Panduan{}
+	p.PanduanAplikasiID = panduanID
+	p.Judul = judul
+	p.Penjelasan = penjelasan
+
+	err := d.tambakUsecase.UpdatePanduan(p)
+	if err != nil {
+		resp.Data = nil
+		resp.Message = err.Error()
+		c.Response().Header().Set(`X-Cursor`, "header")
+		return c.JSON(http.StatusInternalServerError, resp)
+	}
+
+	resp.Status = models.StatusSucces
+	resp.Message = models.MessageSucces
+	c.Response().Header().Set(`X-Cursor`, "header")
+	return c.JSON(http.StatusOK, resp)
+}
+
+func (d *tambak) DeletePanduan(c echo.Context) error {
+	var resp models.Responses
+	resp.Status = models.StatusFailed
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	panduanID, _ := strconv.ParseInt(c.Param("panduanAplikasiID"), 10, 64)
+
+	err := d.tambakUsecase.DeletePanduan(panduanID)
+	if err != nil {
+		resp.Data = nil
+		resp.Message = err.Error()
+		c.Response().Header().Set(`X-Cursor`, "header")
+		return c.JSON(http.StatusInternalServerError, resp)
+	}
+
 	resp.Status = models.StatusSucces
 	resp.Message = models.MessageSucces
 	c.Response().Header().Set(`X-Cursor`, "header")

@@ -208,6 +208,53 @@ func (r *tambak) GetAllInfo() ([]models.Info, error) {
 	return allInfo, nil
 }
 
+func (r *tambak) CreateInfo(i models.Info) error {
+	statement, err := r.DB.Prepare(queryInsertInfo)
+	if err != nil {
+		log.Println("[Repository][CreateInfo][Prepare] Error : ", err)
+		return err
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(i.Judul, i.Penjelasan)
+	if err != nil {
+		log.Println("[Repository][CreateInfo][Execute] Error : ", err)
+	}
+	return err
+}
+
+func (r *tambak) UpdateInfo(m models.Info) error {
+	statement, err := r.DB.Prepare(QueryUpdateInfo)
+	if err != nil {
+		log.Println("[Repository][UpdateInfo][Prepare] Error : ", err)
+		return err
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(m.Judul, m.Penjelasan, m.InfoID)
+	if err != nil {
+		log.Println("[Repository][UpdateInfo][Execute] Error : ", err)
+		return err
+	}
+	return err
+}
+
+func (r *tambak) DeleteInfo(id int64) error {
+	statement, err := r.DB.Prepare(queryDeleteInfo)
+	if err != nil {
+		log.Println("[Repository][DeleteInfo][Prepare] Error : ", err)
+		return err
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(id)
+	if err != nil {
+		log.Println("[Repository][DeleteInfo][Execute] Error : ", err)
+		return err
+	}
+	return err
+}
+
 func (r *tambak) GetAllPanduan() ([]models.Panduan, error) {
 	panduan := []models.Panduan{}
 	statement, err := r.DB.Prepare(queryGetAllPanduan)
@@ -231,6 +278,53 @@ func (r *tambak) GetAllPanduan() ([]models.Panduan, error) {
 	}
 
 	return panduan, nil
+}
+
+func (r *tambak) CreatePanduan(p models.Panduan) error {
+	statement, err := r.DB.Prepare(queryInsertPanduan)
+	if err != nil {
+		log.Println("[Repository][CreatePanduan][Prepare] Error : ", err)
+		return err
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(p.Judul, p.Penjelasan)
+	if err != nil {
+		log.Println("[Repository][CreatePanduan][Execute] Error : ", err)
+	}
+	return err
+}
+
+func (r *tambak) UpdatePanduan(m models.Panduan) error {
+	statement, err := r.DB.Prepare(QueryUpdatePanduan)
+	if err != nil {
+		log.Println("[Repository][UpdatePanduan][Prepare] Error : ", err)
+		return err
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(m.Judul, m.Penjelasan, m.PanduanAplikasiID)
+	if err != nil {
+		log.Println("[Repository][UpdatePanduan][Execute] Error : ", err)
+		return err
+	}
+	return err
+}
+
+func (r *tambak) DeletePanduan(id int64) error {
+	statement, err := r.DB.Prepare(queryDeletePanduan)
+	if err != nil {
+		log.Println("[Repository][DeletePanduan][Prepare] Error : ", err)
+		return err
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(id)
+	if err != nil {
+		log.Println("[Repository][UpdatePanduan][Execute] Error : ", err)
+		return err
+	}
+	return err
 }
 
 func (r *tambak) GetMonitorTambak(tambakID int64, tanggal string) ([]models.MonitorTambak, error) {

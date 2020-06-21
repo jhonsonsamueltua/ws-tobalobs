@@ -168,10 +168,46 @@ func (u *tambak) GetAllInfo() ([]models.Info, error) {
 	return allInfo, err
 }
 
+func (u *tambak) CreateInfo(i models.Info) error {
+	err := u.tambakRepo.CreateInfo(i)
+
+	return err
+}
+
+func (u *tambak) UpdateInfo(i models.Info) error {
+	err := u.tambakRepo.UpdateInfo(i)
+
+	return err
+}
+
+func (u *tambak) DeleteInfo(id int64) error {
+	err := u.tambakRepo.DeleteInfo(id)
+
+	return err
+}
+
 func (u *tambak) GetAllPanduan() ([]models.Panduan, error) {
 	panduan, err := u.tambakRepo.GetAllPanduan()
 
 	return panduan, err
+}
+
+func (u *tambak) CreatePanduan(p models.Panduan) error {
+	err := u.tambakRepo.CreatePanduan(p)
+
+	return err
+}
+
+func (u *tambak) UpdatePanduan(p models.Panduan) error {
+	err := u.tambakRepo.UpdatePanduan(p)
+
+	return err
+}
+
+func (u *tambak) DeletePanduan(id int64) error {
+	err := u.tambakRepo.DeletePanduan(id)
+
+	return err
 }
 
 func (u *tambak) GetMonitorTambak(tambakID int64, tanggal string) ([]models.MonitorTambak, error) {
