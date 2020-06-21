@@ -62,7 +62,7 @@ func (u *tambak) CreateTambak(t models.Tambak) (int64, error) {
 			//pemisahan induk
 			pemisahanInduk = pemindahanInduk.AddDate(0, 0, 45)
 			n.GuidelineID = 5
-			n.Keterangan = "Pemisahan induk dari anakan (telur menetas dan turun anak"
+			n.Keterangan = "Pemisahan induk dari anakan (telur menetas dan turun anak)"
 			n.WaktuTanggal = pemisahanInduk.Format("2006-01-02 07:00:00")
 			_, err = u.mysqlNotifRepo.SaveNotifGuideline(n)
 			if err != nil {
@@ -72,7 +72,7 @@ func (u *tambak) CreateTambak(t models.Tambak) (int64, error) {
 			panenBenih = pemindahanInduk.AddDate(0, 2, 0)
 			n.GuidelineID = 8
 			n.Keterangan = "Panen benih lobster untuk benih"
-			n.WaktuTanggal = panenBenih.Format("2006-01-02 07:00:00 ")
+			n.WaktuTanggal = fmt.Sprintf("%s 18:30:00", panenBenih.Format("2006-01-02"))
 			_, err = u.mysqlNotifRepo.SaveNotifGuideline(n)
 			if err != nil {
 				log.Println(err)
@@ -116,7 +116,7 @@ func (u *tambak) CreateTambak(t models.Tambak) (int64, error) {
 			panenKonsumsi = now.AddDate(0, lamaBudidaya, 0)
 			n.GuidelineID = 8
 			n.Keterangan = "Panen lobster pembesaran"
-			n.WaktuTanggal = panenKonsumsi.Format("2006-01-02 07:00:00")
+			n.WaktuTanggal = fmt.Sprintf("%s 18:30:00", panenKonsumsi.Format("2006-01-02"))
 			_, err = u.mysqlNotifRepo.SaveNotifGuideline(n)
 			if err != nil {
 				log.Println(err)
