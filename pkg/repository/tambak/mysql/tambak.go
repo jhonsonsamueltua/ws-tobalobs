@@ -383,3 +383,28 @@ func (r *tambak) GetAllTambakID() ([]int64, []int64, []string, error) {
 
 	return userID, tambakID, namaTambak, err
 }
+
+func (r *tambak) GetAllSchedule() ([]models.Scheduling, error) {
+	sch := []models.Scheduling{}
+	statement, err := r.DB.Prepare(queryGetAllSchedule)
+	if err != nil {
+		log.Println("[Repository][GetAllSchedule][Prepare] Error : ", err)
+		return sch, err
+	}
+	rows, err := statement.Query()
+	if err != nil {
+		log.Println("Repository error : ", err)
+		return sch, err
+	}
+
+	for rows.Next() {
+		s := models.Scheduling{}
+		err := rows.Scan(&s.ID, &s.Minutes, &s.Hours, &s.DayOfMonth, &s.Months, &s.DayOfWeek, &s.TypeGuideline, &s.TambakID, &s.Description)
+		if err != nil {
+			log.Println(err)
+		}
+		sch = append(sch, s)
+	}
+
+	return sch, err
+}

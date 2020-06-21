@@ -4,4 +4,5 @@ type Usecase interface {
 	CronPakan(waktu string) error
 	CronNotifGuideline() error
 	InitCron()
+	InitCron2()
 }

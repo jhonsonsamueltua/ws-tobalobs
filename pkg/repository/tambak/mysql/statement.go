@@ -46,4 +46,6 @@ const (
 		WHERE panduan_aplikasi_id = ?
 	`
 	queryDeletePanduan = `DELETE FROM panduan_aplikasi WHERE panduan_aplikasi_id = ?`
+
+	queryGetAllSchedule = `SELECT id, minutes, hours, day_of_month, months, day_of_week, type_guideline, tambak_id, description FROM scheduling WHERE enabled = 1`
 )

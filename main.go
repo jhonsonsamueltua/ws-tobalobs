@@ -4,12 +4,14 @@ import (
 	"database/sql"
 	"log"
 	"os"
+	"time"
 
 	"firebase.google.com/go/messaging"
 	"github.com/go-redis/redis"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
 	_ "github.com/lib/pq"
+	c "github.com/robfig/cron"
 
 	"github.com/ws-tobalobs/middleware"
 	"github.com/ws-tobalobs/pkg/common/config"
@@ -76,11 +78,18 @@ func main() {
 	e.Use(middL.CORS)
 	e.Use(middL.JwtAuthentication)
 
+	//cron
+	tz, _ := time.LoadLocation("Asia/Jakarta")
+	cr := c.New(c.WithLocation(tz))
+
+	log.Println("start Cron...")
+	cr.Start()
+
 	//module
 	tambak(e, db, fcm, redis)
 	user(e, db, Conf, redis)
 	notif(e, db, fcm, redis)
-	cron(db, fcm, redis)
+	cron(db, fcm, redis, cr)
 
 	log.Fatal(e.Start(":8000"))
 }
@@ -111,11 +120,12 @@ func user(e *echo.Echo, db *sql.DB, conf *models.Config, redis *redis.Client) {
 	userDeliver.InitUserHandler(e, userUsecase)
 }
 
-func cron(db *sql.DB, fcm *messaging.Client, redis *redis.Client) {
+func cron(db *sql.DB, fcm *messaging.Client, redis *redis.Client, cr *c.Cron) {
 	tambakRepo := tambakRepo.InitTambakRepo(db)
 	fcmNotifRepo := fcmNotifRepo.InitFCMRepo(fcm)
 	redisNotifRepo := redisNotifRepo.InitRedisRepo(redis)
 	mysqlNotifRepo := mysqlNotifRepo.InitNotifRepo(db)
-	cron := cronUseCase.InitCronUsecase(tambakRepo, fcmNotifRepo, redisNotifRepo, mysqlNotifRepo)
+	cron := cronUseCase.InitCronUsecase(tambakRepo, fcmNotifRepo, redisNotifRepo, mysqlNotifRepo, cr)
 	cron.InitCron()
+	cron.InitCron2()
 }

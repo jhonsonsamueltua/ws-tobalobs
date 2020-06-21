@@ -1,26 +1,65 @@
 package module
 
 import (
+	"fmt"
 	"log"
 	"strconv"
 	"time"
 
-	c "github.com/robfig/cron"
+	logs "github.com/sirupsen/logrus"
 
 	"github.com/ws-tobalobs/pkg/models"
 )
 
 func (u *cron) InitCron() {
-	cr := c.New()
-	cr.AddFunc("* 7 * * *", func() { u.CronNotifGuideline() })   //setiap jam 7:00
-	cr.AddFunc("* 17 * * *", func() { u.CronNotifGuideline() })  //setiap jam 17:00
-	cr.AddFunc("30 18 * * *", func() { u.CronNotifGuideline() }) //setiap jam 18:30
 
-	// cr.AddFunc("0 7 * * *", func() { u.CronPakan("pagi") })
-	// cr.AddFunc("0 17 * * *", func() { u.CronPakan("sore") })
-	// cr.AddFunc("0 7 */3 * *", func() { log.Println("ganti air") })
-	log.Println("start Cron...")
-	cr.Start()
+	//get list schedule from db
+	sch, err := u.tambakRepo.GetAllSchedule()
+	if err != nil {
+		log.Println(err)
+	}
+	if len(sch) > 0 {
+		var str string
+		for _, data := range sch {
+			str = fmt.Sprintf("%s %s %s %s %s", data.Minutes, data.Hours, data.DayOfMonth, data.Months, data.DayOfWeek)
+			desc := data.Description
+			id, _ := u.cr.AddFunc(str, func() { log.Println(desc) })
+			log.Println("id : ", id)
+		}
+	}
+
+	// cr.AddFunc("0 7 * * *", func() { u.CronNotifGuideline() })   //setiap jam 7:00
+	// cr.AddFunc("0 17 * * *", func() { u.CronNotifGuideline() })  //setiap jam 17:00
+	// cr.AddFunc("30 18 * * *", func() { u.CronNotifGuideline() }) //setiap jam 18:30
+	logs.Infof("Cron Info: %+v\n", u.cr.Entries())
+}
+
+func (u *cron) InitCron2() {
+
+	//get list schedule from db
+	// sch, err := u.tambakRepo.GetAllSchedule()
+	// if err != nil {
+	// 	log.Println(err)
+	// }
+	// if len(sch) > 0 {
+	// 	var str string
+	// 	for _, data := range sch {
+	// 		str = fmt.Sprintf("%s %s %s %s %s", data.Minutes, data.Hours, data.DayOfMonth, data.Months, data.DayOfWeek)
+	// 		desc := data.Description
+	// 		id, _ := u.cr.AddFunc(str, func() { log.Println(desc) })
+	// 		log.Println("id : ", id)
+	// 	}
+	// }
+
+	u.cr.AddFunc("*/1 * * * *", func() { log.Println("3") }) //setiap jam 7:00
+	u.cr.AddFunc("*/1 * * * *", func() { log.Println("4") }) //setiap jam 17:00
+
+	u.cr.Remove(2)
+
+	// cr.AddFunc("0 7 * * *", func() { u.CronNotifGuideline() })   //setiap jam 7:00
+	// cr.AddFunc("0 17 * * *", func() { u.CronNotifGuideline() })  //setiap jam 17:00
+	// cr.AddFunc("30 18 * * *", func() { u.CronNotifGuideline() }) //setiap jam 18:30
+	logs.Infof("Cron Info: %+v\n", u.cr.Entries())
 }
 
 func (u *cron) CronPakan(waktu string) error {

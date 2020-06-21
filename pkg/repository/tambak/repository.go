@@ -24,4 +24,5 @@ type Repository interface {
 	CreatePanduan(models.Panduan) error
 	UpdatePanduan(models.Panduan) error
 	DeletePanduan(int64) error
+	GetAllSchedule() ([]models.Scheduling, error)
 }
