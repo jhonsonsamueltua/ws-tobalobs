@@ -21,7 +21,7 @@ func (r *tambak) GetAllTambak(userID int64) ([]models.Tambak, error) {
 
 	for rows.Next() {
 		tambak := models.Tambak{}
-		err := rows.Scan(&tambak.TambakID, &tambak.NamaTambak, &tambak.Status)
+		err := rows.Scan(&tambak.TambakID, &tambak.NamaTambak, &tambak.Status, &tambak.PakanPagi, &tambak.PakanSore, &tambak.GantiAir)
 		if err != nil {
 			log.Println(err)
 		}
