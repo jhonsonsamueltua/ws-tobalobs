@@ -383,3 +383,25 @@ func (r *tambak) GetAllTambakID() ([]int64, []int64, []string, error) {
 
 	return userID, tambakID, namaTambak, err
 }
+
+func (r *tambak) UpdateJadwal(tambakID int64, val string, _type string) error {
+	query := queryUpdateJadwalPakanPagi
+	if _type == "pakan_sore" {
+		query = queryUpdateJadwalPakanSore
+	} else if _type == "ganti_air" {
+		query = queryUpdateJadwalGantiAir
+	}
+
+	statement, err := r.DB.Prepare(query)
+	if err != nil {
+		log.Println("[Repository][UpdateJadwal][Prepare] Error : ", err)
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(val, tambakID)
+	if err != nil {
+		log.Println("[Repository][UpdateJadwal][Execute] Error : ", err)
+	}
+
+	return err
+}

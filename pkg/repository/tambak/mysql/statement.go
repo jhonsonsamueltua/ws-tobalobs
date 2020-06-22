@@ -46,4 +46,14 @@ const (
 		WHERE panduan_aplikasi_id = ?
 	`
 	queryDeletePanduan = `DELETE FROM panduan_aplikasi WHERE panduan_aplikasi_id = ?`
+
+	queryUpdateJadwalPakanPagi = `
+		UPDATE tambak SET pakan_pagi = ? WHERE tambak_id = ?
+	`
+	queryUpdateJadwalPakanSore = `
+		UPDATE tambak SET pakan_sore = ? WHERE tambak_id = ?
+	`
+	queryUpdateJadwalGantiAir = `
+		UPDATE tambak SET ganti_air = ? WHERE tambak_id = ?
+	`
 )

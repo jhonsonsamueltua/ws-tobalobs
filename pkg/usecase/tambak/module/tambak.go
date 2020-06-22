@@ -216,6 +216,11 @@ func (u *tambak) GetMonitorTambak(tambakID int64, tanggal string) ([]models.Moni
 	return m, err
 }
 
+func (u *tambak) UpdateJadwal(tambakID int64, val string, _type string) error {
+	err := u.tambakRepo.UpdateJadwal(tambakID, val, _type)
+	return err
+}
+
 func execute(tambakID int64) {
 	tambakIDStr := strconv.FormatInt(tambakID, 10)
 	log.Println("./script/script.sh " + tambakIDStr)

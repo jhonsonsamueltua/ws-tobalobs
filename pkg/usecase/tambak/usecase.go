@@ -19,4 +19,5 @@ type Usecase interface {
 	CreatePanduan(models.Panduan) error
 	UpdatePanduan(models.Panduan) error
 	DeletePanduan(int64) error
+	UpdateJadwal(tambakID int64, val string, _type string) error
 }

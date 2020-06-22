@@ -526,3 +526,29 @@ func (d *tambak) GetMonitorTambak(c echo.Context) error {
 	c.Response().Header().Set(`X-Cursor`, "header")
 	return c.JSON(http.StatusOK, resp)
 }
+
+func (d *tambak) UpdateJadwal(c echo.Context) error {
+	var resp models.Responses
+	resp.Status = models.StatusFailed
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	tambakID, _ := strconv.ParseInt(c.Param("tambakID"), 10, 64)
+	_type := c.FormValue("type")
+	val := c.FormValue("value")
+
+	err := d.tambakUsecase.UpdateJadwal(tambakID, val, _type)
+	if err != nil {
+		resp.Data = nil
+		resp.Message = err.Error()
+		c.Response().Header().Set(`X-Cursor`, "header")
+		return c.JSON(http.StatusInternalServerError, resp)
+	}
+
+	resp.Status = models.StatusSucces
+	resp.Message = models.MessageSucces
+	c.Response().Header().Set(`X-Cursor`, "header")
+	return c.JSON(http.StatusOK, resp)
+}
