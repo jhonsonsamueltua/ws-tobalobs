@@ -8,13 +8,26 @@ import (
 )
 
 func (u *notif) GetAllNotif(userID int64, tambakID int64, typeNotif string) ([]models.MessagePushNotif, error) {
+	var res []models.MessagePushNotif
+
 	allNotif, err := u.mysqlNotifRepo.GetAllNotif(userID, tambakID, typeNotif)
 
-	return allNotif, err
+	format := "2006-01-02 15:04:05"
+	for _, n := range allNotif {
+		dt, _ := time.Parse(format, n.WaktuTanggal)
+		n.WaktuTanggal = dt.Format("2 Jan 2006 - 15:04")
+		res = append(res, n)
+	}
+
+	return res, err
 }
 
 func (u *notif) GetDetailNotif(notifID int64) (models.Notifikasi, error) {
 	notif, err := u.mysqlNotifRepo.GetDetailNotif(notifID)
+
+	format := "2006-01-02 15:04:05"
+	dt, _ := time.Parse(format, notif.WaktuTanggal)
+	notif.WaktuTanggal = dt.Format("2 Jan 2006 - 15:04")
 
 	return notif, err
 }

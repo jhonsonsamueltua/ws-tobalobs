@@ -3,6 +3,7 @@ package module
 import (
 	"fmt"
 	"log"
+	"math"
 	"os/exec"
 	"strconv"
 	"time"
@@ -23,12 +24,18 @@ func (u *tambak) GetAllTambak(userID int64) ([]models.Tambak, int, error) {
 func (u *tambak) GetTambakByID(tambakID int64, userID int64) (models.Tambak, error) {
 	tambak, err := u.tambakRepo.GetTambakByID(tambakID, userID)
 
+	format := "2006-01-02"
+	dt, _ := time.Parse(format, tambak.TanggalMulaiBudidaya)
+	tambak.TanggalMulaiBudidaya = dt.Format("2 Jan 2006")
+
 	return tambak, err
 }
 
 func (u *tambak) GetLastMonitorTambak(tambakID int64) (models.MonitorTambak, error) {
 	monitor, err := u.tambakRepo.GetLastMonitorTambak(tambakID)
-
+	monitor.PH = math.Floor(monitor.PH*100) / 100
+	monitor.Suhu = math.Floor(monitor.Suhu*100) / 100
+	monitor.DO = math.Floor(monitor.DO*100) / 100
 	return monitor, err
 }
 
