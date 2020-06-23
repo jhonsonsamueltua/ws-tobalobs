@@ -36,7 +36,7 @@ func (r *notif) GetAllNotif(userID int64, tambakID int64, typeNotif string) ([]m
 
 	for rows.Next() {
 		notif := models.MessagePushNotif{}
-		err := rows.Scan(&notif.ID, &notif.Title, &notif.Body, &notif.StatusNotifikasi, &notif.TipeNotifikasi)
+		err := rows.Scan(&notif.ID, &notif.Title, &notif.Body, &notif.StatusNotifikasi, &notif.TipeNotifikasi, &notif.WaktuTanggal)
 		if err != nil {
 			log.Println(err)
 		}

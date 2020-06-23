@@ -52,6 +52,7 @@ type MessagePushNotif struct {
 	Body             string `json:"body,omitempty"`
 	StatusNotifikasi string `json:"statusNotifikasi,omitempty"`
 	TipeNotifikasi   string `json:"tipeNotifikasi,omitempty"`
+	WaktuTanggal     string `json:"waktuTanggal,omitempty"`
 }
 
 type NotifikasiKondisi struct {

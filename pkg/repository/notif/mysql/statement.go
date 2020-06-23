@@ -14,7 +14,7 @@ const (
 	// ORDER BY notif.notifikasi_penyimpangan_kondisi_tambak_id ASC
 	// `
 	queryGetAllNotif = `
-		SELECT n.notifikasi_id, t.nama_tambak, n.keterangan, n.status_notifikasi, n.tipe_notifikasi
+		SELECT n.notifikasi_id, t.nama_tambak, n.keterangan, n.status_notifikasi, n.tipe_notifikasi, n.waktu_tanggal
 		FROM notifikasi as n
 		LEFT JOIN tambak as t
 		ON t.tambak_id = n.tambak_id
@@ -31,14 +31,14 @@ const (
 	`
 
 	queryGetAllNotifPerTambak = `
-		SELECT notifikasi_id, tipe_notifikasi, keterangan, status_notifikasi, tipe_notifikasi
+		SELECT notifikasi_id, tipe_notifikasi, keterangan, status_notifikasi, tipe_notifikasi, waktu_tanggal
 		FROM notifikasi
 		WHERE tambak_id = ? AND (status_notifikasi = "read" OR status_notifikasi = "unread")
 		ORDER BY notifikasi_id DESC
 	`
 
 	queryGetAllNotifUnreadPerTambak = `
-		SELECT notifikasi_id, tipe_notifikasi, keterangan, status_notifikasi, tipe_notifikasi
+		SELECT notifikasi_id, tipe_notifikasi, keterangan, status_notifikasi, tipe_notifikasi, waktu_tanggal
 		FROM notifikasi
 		WHERE tambak_id = ? AND status_notifikasi = "unread"
 		ORDER BY notifikasi_id DESC
