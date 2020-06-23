@@ -33,9 +33,15 @@ func (u *tambak) GetTambakByID(tambakID int64, userID int64) (models.Tambak, err
 
 func (u *tambak) GetLastMonitorTambak(tambakID int64) (models.MonitorTambak, error) {
 	monitor, err := u.tambakRepo.GetLastMonitorTambak(tambakID)
+
 	monitor.PH = math.Floor(monitor.PH*100) / 100
 	monitor.Suhu = math.Floor(monitor.Suhu*100) / 100
 	monitor.DO = math.Floor(monitor.DO*100) / 100
+
+	format := "2006-01-02 15:04:05"
+	dt, _ := time.Parse(format, monitor.WaktuTanggal)
+	monitor.WaktuTanggal = dt.Format("2 Jan 2006 - 15:04")
+
 	return monitor, err
 }
 
