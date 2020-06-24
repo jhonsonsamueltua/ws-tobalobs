@@ -27,3 +27,12 @@ func (r *user) RemoveDeviceID(key string, value string) {
 		log.Println("Repo Remove DeviceID error : ", err)
 	}
 }
+
+// SetValue sets the key value pair
+func (r *user) SetValue(key string, value string, expiry time.Duration) error {
+	err := r.redis.Set(key, value, expiry).Err()
+	if err != nil {
+		return err
+	}
+	return nil
+}

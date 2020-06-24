@@ -1,6 +1,8 @@
 package user
 
 import (
+	"time"
+
 	"github.com/ws-tobalobs/pkg/models"
 )
 
@@ -16,4 +18,9 @@ type RepositoryRedis interface {
 	SaveDeviceID(key string, value string)
 	RemoveDeviceID(key string, value string)
 	Logout(token string, exp int) error
+	SetValue(key string, value string, expiry time.Duration) error
+}
+
+type RepositorySMS interface {
+	Sendmessage(toNumber string, otpMessage string) error
 }
