@@ -114,8 +114,8 @@ func (d *tambak) CreateTambak(c echo.Context) error {
 	jumlahLobsterBetina, _ := strconv.Atoi(c.FormValue("jumlahLobsterBetina"))
 	userID := c.Request().Context().Value("user") //Grab the id of the user that send the request
 	userIDInt, _ := userID.(int64)
-	pakanPagi := "07:00"
-	pakanSore := "18:00"
+	pakanPagi := "08:00"
+	pakanSore := "17:00"
 	gantiAir := "3"
 
 	t := models.Tambak{}
