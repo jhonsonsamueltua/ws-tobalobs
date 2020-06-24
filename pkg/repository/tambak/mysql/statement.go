@@ -8,7 +8,7 @@ const (
 	queryInsertNotifikasiKondisiTambak = `INSERT INTO notifikasi (tambak_id, penyimpangan_kondisi_tambak_id, tipe_notifikasi, keterangan, status_notifikasi, waktu_tanggal) VALUES (?, ?, ?, ?, ?, ?)`
 	queryUpdateNotifikasiKondisiTambak = `UPDATE notifikasi SET status_notifikasi = ? WHERE notifikasi_id = ?`
 	queryInsertTambak                  = `INSERT INTO tambak (user_id, nama_tambak, panjang, lebar, jenis_budidaya, tanggal_mulai_budidaya, usia_lobster, jumlah_lobster, jumlah_lobster_jantan, jumlah_lobster_betina, status, pakan_pagi, pakan_sore, ganti_air) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-	queryGetMonitorTambak              = `SELECT monitor_tambak_id, ph, do, suhu, DATE_FORMAT(waktu_tanggal,'%h:%i:%s %p') waktu_tanggal, keterangan FROM monitor_tambak WHERE tambak_id = ? AND DATE(waktu_tanggal) = ? ORDER BY waktu_tanggal ASC`
+	queryGetMonitorTambak              = `SELECT monitor_tambak_id, ph, do, suhu, DATE_FORMAT(waktu_tanggal,'%H:%i') waktu_tanggal, keterangan FROM monitor_tambak WHERE tambak_id = ? AND DATE(waktu_tanggal) = ? ORDER BY waktu_tanggal DESC`
 	QueryUpdateTambak                  = `
 		UPDATE tambak
 		SET 
