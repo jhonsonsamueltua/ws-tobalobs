@@ -18,6 +18,9 @@ func (d *user) Register(c echo.Context) error {
 	if ctx == nil {
 		ctx = context.Background()
 	}
+
+	smsNonce := c.Request().Header.Get("token")
+	otp := c.Request().Header.Get("otp")
 	username := c.FormValue("username")
 	password := c.FormValue("password")
 	nama := c.FormValue("nama")
@@ -35,7 +38,7 @@ func (d *user) Register(c echo.Context) error {
 		Role:         "peternak",
 	}
 
-	token, err := d.userUsecase.Register(user)
+	token, err := d.userUsecase.Register(user, smsNonce, otp)
 	if err != nil {
 		log.Println(err)
 		resp.Data = nil
@@ -52,6 +55,59 @@ func (d *user) Register(c echo.Context) error {
 	}
 
 	resp.Data = auth
+	resp.Status = models.StatusSucces
+	resp.Message = models.MessageSucces
+	c.Response().Header().Set(`X-Cursor`, "header")
+	return c.JSON(http.StatusOK, resp)
+}
+
+func (d *user) ForgotPassword(c echo.Context) error {
+	var resp models.Responses
+	resp.Status = models.StatusFailed
+
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	smsNonce := c.Request().Header.Get("token")
+	otp := c.Request().Header.Get("otp")
+
+	err := d.userUsecase.ForgotPassword(smsNonce, otp)
+	if err != nil {
+		log.Println(err)
+		resp.Message = err.Error()
+		c.Response().Header().Set(`X-Cursor`, "header")
+		return c.JSON(http.StatusInternalServerError, resp)
+	}
+
+	resp.Status = models.StatusSucces
+	resp.Message = models.MessageSucces
+	c.Response().Header().Set(`X-Cursor`, "header")
+	return c.JSON(http.StatusOK, resp)
+}
+
+func (d *user) Verify(c echo.Context) error {
+	var resp models.Responses
+	resp.Status = models.StatusFailed
+
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	username := c.FormValue("username")
+	noHp := c.FormValue("noHp")
+	_type := c.FormValue("type")
+
+	token, err := d.userUsecase.Verify(username, noHp, _type)
+	if err != nil {
+		log.Println(err)
+		resp.Message = err.Error()
+		c.Response().Header().Set(`X-Cursor`, "header")
+		return c.JSON(http.StatusInternalServerError, resp)
+	}
+
+	resp.Data = token
 	resp.Status = models.StatusSucces
 	resp.Message = models.MessageSucces
 	c.Response().Header().Set(`X-Cursor`, "header")

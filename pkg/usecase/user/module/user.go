@@ -1,40 +1,140 @@
 package module
 
 import (
+	"crypto/rand"
 	"errors"
 	"fmt"
 	"log"
+	"math/big"
+	"strconv"
 	"time"
 
+	uuid "github.com/nu7hatch/gouuid"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/ws-tobalobs/pkg/models"
 )
 
-func (u *user) Register(m models.User) (string, error) {
+func (u *user) Register(m models.User, smsNonse string, otp string) (string, error) {
 	token := ""
-	users, _ := u.userRepo.GetUser(m.Username)
-	if (models.User{}) == users {
-		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(m.Password), bcrypt.DefaultCost)
-		if len(hashedPassword) != 0 || err == nil {
-			m.Password = string(hashedPassword[:])
-			userID, err := u.userRepo.Register(m)
-			if err != nil {
-				return "", err
-			}
 
-			token, err = u.jwtUsecase.GenerateJWT(u.conf, userID)
-			if err != nil {
-				return "", err
-			}
-			return token, err
-		} else {
-			log.Println("[Usecase][User][Register][HashPassword] Error : ", err)
-			return "", errors.New("Error Hash Password")
+	// get phone number
+	OriginalHp, err := u.userRepoRedis.GetValue(smsNonse)
+	if err != nil {
+		return "", errors.New("Kode OTP kaladuarsa")
+	}
+
+	//get OTP
+	originalOtp, err := u.userRepoRedis.GetValue(OriginalHp)
+	if err != nil {
+		return "", errors.New("Kode OTP kaladuarsa")
+	}
+
+	// cek & compare OTP redis
+	if originalOtp != otp {
+		return "", errors.New("Kode OTP salah")
+	}
+
+	// users, _ := u.userRepo.GetUser(m.Username)
+	// if (models.User{}) == users {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(m.Password), bcrypt.DefaultCost)
+	if len(hashedPassword) != 0 || err == nil {
+		m.Password = string(hashedPassword[:])
+		userID, err := u.userRepo.Register(m)
+		if err != nil {
+			return "", err
+		}
+
+		token, _ = u.jwtUsecase.GenerateJWT(u.conf, userID)
+		return token, err
+	} else {
+		log.Println(err)
+		return "", errors.New("Error Hash Password")
+	}
+	// } else {
+	// 	return "", errors.New("Username already exist")
+	// }
+}
+
+func (u *user) ForgotPassword(smsNonse string, otp string) error {
+	// get phone number
+	OriginalHp, err := u.userRepoRedis.GetValue(smsNonse)
+	if err != nil {
+		return errors.New("Kode OTP kaladuarsa")
+	}
+
+	//get OTP
+	originalOtp, err := u.userRepoRedis.GetValue(OriginalHp)
+	if err != nil {
+		return errors.New("Kode OTP kaladuarsa")
+	}
+
+	// cek & compare OTP redis
+	if originalOtp != otp {
+		return errors.New("Kode OTP salah")
+	}
+
+	return nil
+}
+
+func (u *user) Verify(username, hp string, _type string) (string, error) {
+	var err error
+	token, _ := randToken()
+	otp, _ := getRandNum()
+
+	if _type == "register" {
+		user, _ := u.userRepo.GetUser(username)
+		if (models.User{}) != user {
+			return "", errors.New("Username already exist")
+		}
+
+		user, _ = u.userRepo.GetByPhoneNumber(hp)
+		if (models.User{}) != user {
+			return "", errors.New("Phone number already exist")
 		}
 	} else {
-		return "", errors.New("Username already exist")
+		user, _ := u.userRepo.GetByPhoneNumber(hp)
+		if (models.User{}) == user {
+			return "", errors.New("Phone number is not registered")
+		}
 	}
+
+	//save to redis : key = token, val = hp
+	err = u.userRepoRedis.SetValue(token, hp, 5*time.Minute)
+	if err != nil {
+		return token, err
+	}
+	//save to redis : key = hp, val = otp
+	err = u.userRepoRedis.SetValue(hp, otp, 5*time.Minute)
+	if err != nil {
+		return token, err
+	}
+
+	err = u.userRepoSms.Sendmessage(hp, otp)
+
+	return token, err
+}
+
+// getRandNum returns a random number of size four for OTP code
+func getRandNum() (string, error) {
+	nBig, e := rand.Int(rand.Reader, big.NewInt(8999))
+	if e != nil {
+		return "", e
+	}
+	return strconv.FormatInt(nBig.Int64()+1000, 10), nil
+}
+
+//token smsNonse or token validate
+func randToken() (string, error) {
+	// Using UUID V5 for generating the Token
+	u4, err := uuid.NewV4()
+	UUIDtoken := u4.String()
+	if err != nil {
+		logrus.Errorln("error:", err)
+		return "", err
+	}
+	return UUIDtoken, nil
 }
 
 func (u *user) Login(username string, password string, deviceID string) (string, string, error) {

@@ -26,6 +26,7 @@ import (
 	tambakRepo "github.com/ws-tobalobs/pkg/repository/tambak/mysql"
 	userRepo "github.com/ws-tobalobs/pkg/repository/user/mysql"
 	userRepoRedis "github.com/ws-tobalobs/pkg/repository/user/redis"
+	userRepoSms "github.com/ws-tobalobs/pkg/repository/user/sms"
 	cronUseCase "github.com/ws-tobalobs/pkg/usecase/cron/module"
 	jwtUseCase "github.com/ws-tobalobs/pkg/usecase/jwt/module"
 	notifUseCase "github.com/ws-tobalobs/pkg/usecase/notif/module"
@@ -106,8 +107,9 @@ func notif(e *echo.Echo, db *sql.DB, fcm *messaging.Client, redis *redis.Client)
 func user(e *echo.Echo, db *sql.DB, conf *models.Config, redis *redis.Client) {
 	userRepo := userRepo.InitUserRepo(db)
 	userRepoRedis := userRepoRedis.InitUserRepoRedis(redis)
+	userRepoSms := userRepoSms.InitSendSMS()
 	jwtUsecase := jwtUseCase.InitJWT(conf)
-	userUsecase := userUseCase.InitUserUsecase(userRepo, jwtUsecase, conf, userRepoRedis)
+	userUsecase := userUseCase.InitUserUsecase(userRepo, jwtUsecase, conf, userRepoRedis, userRepoSms)
 	userDeliver.InitUserHandler(e, userUsecase)
 }
 

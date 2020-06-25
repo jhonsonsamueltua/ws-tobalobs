@@ -76,7 +76,8 @@ func (u *notif) PushNotif(userID, tambakID int64, typeNotif string) error {
 }
 
 func (u *notif) SaveNotif(userID, tambakID int64, typeNotif string) (models.MessagePushNotif, error) {
-	dt := time.Now()
+	loc, _ := time.LoadLocation("Asia/Jakarta")
+	dt := time.Now().In(loc)
 	notif := models.MessagePushNotif{}
 
 	tambak, _ := u.tambakRepo.GetTambakByID(tambakID, userID)

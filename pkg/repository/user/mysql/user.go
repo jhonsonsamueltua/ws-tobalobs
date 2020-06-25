@@ -39,6 +39,21 @@ func (r *user) GetUser(username string) (models.User, error) {
 	return users, err
 }
 
+func (r *user) GetByPhoneNumber(hp string) (models.User, error) {
+	var users = models.User{}
+	statement, err := r.DB.Prepare(querySelectUserByHP)
+	if err != nil {
+		log.Println("[Repository][GetByPhoneNumber][Prepare] Error : ", err)
+		return users, err
+	}
+
+	defer statement.Close()
+
+	err = statement.QueryRow(hp).Scan(&users.UserID, &users.Username, &users.Password, &users.Nama, &users.Alamat, &users.NoHp, &users.TanggalLahir, &users.Role)
+
+	return users, err
+}
+
 func (r *user) GetDetailUser(userID int64) (models.User, error) {
 	var users = models.User{}
 	statement, err := r.DB.Prepare(querySelectDetailUser)
