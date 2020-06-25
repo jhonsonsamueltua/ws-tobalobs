@@ -16,6 +16,8 @@ func InitUserHandler(e *echo.Echo, u userUsecase.Usecase) {
 	}
 
 	e.POST("/api/user/register", handler.Register)
+	e.POST("/api/user/forgot", handler.ForgotPassword)
+	e.POST("/api/user/verify", handler.Verify)
 	e.POST("/api/user/login", handler.Login)
 	e.POST("/api/user/logout", handler.Logout)
 	e.GET("/api/user", handler.GetDetailUser)

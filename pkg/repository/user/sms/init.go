@@ -1,17 +1,16 @@
-package redis
+package sms
 
 import (
-	"github.com/souvikhaldar/gobudgetsms"
+	// "github.com/souvikhaldar/gobudgetsms"
 
 	userRepo "github.com/ws-tobalobs/pkg/repository/user"
 )
 
-type user struct {
-	redis *redis.Client
+type sms struct {
 }
 
-func InitUserRepoRedis(redis *redis.Client) userRepo.RepositoryRedis {
-	return &user{
-		redis: redis,
+func InitSendSMS() userRepo.RepositorySMS {
+	return &sms{
+		// redis: redis,
 	}
 }

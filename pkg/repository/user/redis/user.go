@@ -36,3 +36,12 @@ func (r *user) SetValue(key string, value string, expiry time.Duration) error {
 	}
 	return nil
 }
+
+// GetValue the value corresponding to a given key
+func (r *user) GetValue(key string) (string, error) {
+	value, err := r.redis.Get(key).Result()
+	if err != nil {
+		return "", err
+	}
+	return value, nil
+}

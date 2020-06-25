@@ -3,7 +3,9 @@ package user
 import "github.com/ws-tobalobs/pkg/models"
 
 type Usecase interface {
-	Register(models.User) (string, error)
+	Register(m models.User, smsNonse string, otp string) (string, error)
+	Verify(username, hp string, _type string) (string, error)
+	ForgotPassword(smsNonse string, otp string) error
 	Login(username string, password string, deviceID string) (string, string, error)
 	Logout(token, deviceID string, userID int64) error
 	GetDetailUser(userID int64) (models.User, error)
