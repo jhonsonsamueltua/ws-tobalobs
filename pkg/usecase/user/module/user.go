@@ -57,25 +57,40 @@ func (u *user) Register(m models.User, smsNonse string, otp string) (string, err
 	// }
 }
 
-func (u *user) ForgotPassword(smsNonse string, otp string) error {
+func (u *user) ForgotPassword(smsNonse string, otp string, deviceID string) (string, string, error) {
 	// get phone number
 	OriginalHp, err := u.userRepoRedis.GetValue(smsNonse)
 	if err != nil {
-		return errors.New("Kode OTP kaladuarsa")
+		return "", "", errors.New("Kode OTP kaladuarsa")
 	}
 
 	//get OTP
 	originalOtp, err := u.userRepoRedis.GetValue(OriginalHp)
 	if err != nil {
-		return errors.New("Kode OTP kaladuarsa")
+		return "", "", errors.New("Kode OTP kaladuarsa")
 	}
 
 	// cek & compare OTP redis
 	if originalOtp != otp {
-		return errors.New("Kode OTP salah")
+		return "", "", errors.New("Kode OTP salah")
 	}
 
-	return nil
+	users, err := u.userRepo.GetByPhoneNumber(OriginalHp)
+	if err != nil {
+		return "", "", errors.New("Error get user")
+	}
+
+	// Generate JWT token
+	token, err := u.jwtUsecase.GenerateJWT(u.conf, users.UserID)
+	if err != nil {
+		return "", "", errors.New("Error Create Token")
+	}
+
+	//save deviceID to redis with key userID
+	key := fmt.Sprint("device:", users.UserID)
+	u.userRepoRedis.SaveDeviceID(key, deviceID)
+
+	return token, users.Role, err
 }
 
 func (u *user) Verify(username, hp string, _type string) (string, error) {
@@ -199,18 +214,12 @@ func (u *user) UpdateUser(m models.User) error {
 	return err
 }
 
-func (u *user) UpdatePassword(pass, newPass string, userID int64) error {
-	users, _ := u.userRepo.GetDetailUser(userID)
-	err := bcrypt.CompareHashAndPassword([]byte(users.Password), []byte(pass))
-	if err != nil {
-		err = errors.New("Current password is wrong")
+func (u *user) UpdatePassword(newPass string, userID int64) error {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newPass), bcrypt.DefaultCost)
+	if len(hashedPassword) != 0 || err == nil {
+		err = u.userRepo.UpdatePassword(string(hashedPassword[:]), userID)
 	} else {
-		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newPass), bcrypt.DefaultCost)
-		if len(hashedPassword) != 0 || err == nil {
-			err = u.userRepo.UpdatePassword(string(hashedPassword[:]), userID)
-		} else {
-			err = errors.New("Error hash password")
-		}
+		err = errors.New("Error hash password")
 	}
 
 	return err
