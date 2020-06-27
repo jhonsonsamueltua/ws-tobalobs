@@ -72,8 +72,9 @@ func (d *user) ForgotPassword(c echo.Context) error {
 
 	smsNonce := c.Request().Header.Get("token")
 	otp := c.Request().Header.Get("otp")
+	deviceID := c.Request().Header.Get("deviceID")
 
-	err := d.userUsecase.ForgotPassword(smsNonce, otp)
+	token, role, err := d.userUsecase.ForgotPassword(smsNonce, otp, deviceID)
 	if err != nil {
 		log.Println(err)
 		resp.Message = err.Error()
@@ -81,6 +82,12 @@ func (d *user) ForgotPassword(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, resp)
 	}
 
+	auth := models.AuthResponse{
+		Token: token,
+		Role:  role,
+	}
+
+	resp.Data = auth
 	resp.Status = models.StatusSucces
 	resp.Message = models.MessageSucces
 	c.Response().Header().Set(`X-Cursor`, "header")
@@ -261,10 +268,9 @@ func (d *user) UpdatePassword(c echo.Context) error {
 
 	userID := c.Request().Context().Value("user") //Grab the id of the user that send the request
 	userIDInt, _ := userID.(int64)
-	pass := c.FormValue("password")
 	newPass := c.FormValue("newPassword")
 
-	err := d.userUsecase.UpdatePassword(pass, newPass, userIDInt)
+	err := d.userUsecase.UpdatePassword(newPass, userIDInt)
 	if err != nil {
 		log.Println(err)
 		resp.Data = nil
