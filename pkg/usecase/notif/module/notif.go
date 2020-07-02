@@ -1,6 +1,7 @@
 package module
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 
@@ -89,15 +90,17 @@ func (u *notif) SaveNotif(userID, tambakID int64, typeNotif string) (models.Mess
 		TipeNotifikasi:   "notif-guideline",
 		Keterangan:       "Beri Pakan Pagi Hari",
 		StatusNotifikasi: "unread",
-		WaktuTanggal:     dt.Format("2006-01-02 15:04:05"),
+		WaktuTanggal:     fmt.Sprintf("%s %s", dt.Format("2006-01-02"), tambak.PakanPagi),
 	}
 
 	if typeNotif == "sore" {
 		n.GuidelineID = 2
 		n.Keterangan = "Beri Pakan Sore Hari"
+		n.WaktuTanggal = fmt.Sprintf("%s %s", dt.Format("2006-01-02"), tambak.PakanSore)
 	} else if typeNotif == "ganti-air" {
 		n.GuidelineID = 3
 		n.Keterangan = "Ganti Air Tambak"
+		n.WaktuTanggal = fmt.Sprintf("%s 07:00", dt.Format("2006-01-02"))
 	}
 
 	nID, err := u.mysqlNotifRepo.SaveNotifGuideline(n)
