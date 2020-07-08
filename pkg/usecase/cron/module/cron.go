@@ -13,9 +13,10 @@ import (
 func (u *cron) InitCron() {
 	jkt, _ := time.LoadLocation("Asia/Jakarta")
 	cr := c.New(c.WithLocation(jkt))
-	cr.AddFunc("0 7 * * ?", func() { u.CronNotifGuideline() }) //setiap jam 7:00
+	// cr.AddFunc("0 7 * * ?", func() { u.CronNotifGuideline() }) //setiap jam 7:00
 	// cr.AddFunc("0 18 * * ?", func() { u.CronNotifGuideline() })  //setiap jam 17:00
-	cr.AddFunc("30 18 * * ?", func() { u.CronNotifGuideline() }) //setiap jam 18:30
+	// cr.AddFunc("30 18 * * ?", func() { u.CronNotifGuideline() }) //setiap jam 18:30
+	cr.AddFunc("*/1 * * * *", func() { u.CronNotifGuideline() })
 
 	// cr.AddFunc("0 7 * * *", func() { u.CronPakan("pagi") })
 	// cr.AddFunc("0 17 * * *", func() { u.CronPakan("sore") })

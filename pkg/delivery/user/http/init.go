@@ -23,4 +23,7 @@ func InitUserHandler(e *echo.Echo, u userUsecase.Usecase) {
 	e.GET("/api/user", handler.GetDetailUser)
 	e.PUT("/api/user", handler.UpdateUser)
 	e.PUT("/api/user/password", handler.UpdatePassword)
+
+	//manage dynamic content
+	e.GET("/api/penyimpangan-kondisi-tambak", handler.GetKondisiPenyimpangan)
 }

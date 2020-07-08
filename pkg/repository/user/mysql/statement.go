@@ -21,4 +21,6 @@ const (
 			password = ?
 		WHERE user_id = ?
 	`
+
+	queryGetAllKondisi = `SELECT penyimpangan_kondisi_tambak_id, aksi_penyimpangan, kondisi, tipe, nilai FROM penyimpangan_kondisi_tambak`
 )

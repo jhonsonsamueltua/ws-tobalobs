@@ -235,3 +235,9 @@ func getTokenRemainingValidity(timestamp interface{}) int {
 	}
 	return 60
 }
+
+func (u *user) GetKondisiMenyimpang() ([]models.KondisiMenyimpang, error) {
+	res, err := u.userRepo.GetKondisiMenyimpang()
+
+	return res, err
+}

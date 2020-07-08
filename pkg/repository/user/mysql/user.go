@@ -100,3 +100,28 @@ func (r *user) UpdatePassword(newPass string, userID int64) error {
 	}
 	return err
 }
+
+func (r *user) GetKondisiMenyimpang() ([]models.KondisiMenyimpang, error) {
+	res := []models.KondisiMenyimpang{}
+	statement, err := r.DB.Prepare(queryGetAllKondisi)
+	if err != nil {
+		log.Println("[Repository][GetKondisiMenyimpang][Prepare] Error : ", err)
+		return res, err
+	}
+	rows, err := statement.Query()
+	if err != nil {
+		log.Println("Repository error : ", err)
+		return res, err
+	}
+
+	for rows.Next() {
+		cond := models.KondisiMenyimpang{}
+		err := rows.Scan(&cond.ID, &cond.AksiPenyimpangan, &cond.Kondisi, &cond.Tipe, &cond.Nilai)
+		if err != nil {
+			log.Println(err)
+		}
+		res = append(res, cond)
+	}
+
+	return res, nil
+}
