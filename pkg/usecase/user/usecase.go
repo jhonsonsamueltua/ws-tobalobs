@@ -14,4 +14,5 @@ type Usecase interface {
 
 	// manage data dynamic
 	GetKondisiMenyimpang() ([]models.KondisiMenyimpang, error)
+	UpdateKondisiMenyimpang(m models.KondisiMenyimpang) error
 }

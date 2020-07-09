@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo"
 
@@ -305,6 +306,42 @@ func (d *user) GetKondisiPenyimpangan(c echo.Context) error {
 	}
 
 	resp.Data = res
+	resp.Status = models.StatusSucces
+	resp.Message = models.MessageSucces
+	c.Response().Header().Set(`X-Cursor`, "header")
+	return c.JSON(http.StatusOK, resp)
+}
+
+func (d *user) UpdateKondisiMenyimpang(c echo.Context) error {
+	var resp models.Responses
+	resp.Status = models.StatusFailed
+
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	ID, _ := strconv.ParseInt(c.Param("id"), 10, 64)
+	aksiPenyimpangan := c.FormValue("aksiPenyimpangan")
+	kondisi := c.FormValue("kondisi")
+	tipe := c.FormValue("tipe")
+	nilai := c.FormValue("nilai")
+
+	m := models.KondisiMenyimpang{
+		ID:               ID,
+		AksiPenyimpangan: aksiPenyimpangan,
+		Kondisi:          kondisi,
+		Tipe:             tipe,
+		Nilai:            nilai,
+	}
+
+	err := d.userUsecase.UpdateKondisiMenyimpang(m)
+	if err != nil {
+		resp.Message = err.Error()
+		c.Response().Header().Set(`X-Cursor`, "header")
+		return c.JSON(http.StatusInternalServerError, resp)
+	}
+
 	resp.Status = models.StatusSucces
 	resp.Message = models.MessageSucces
 	c.Response().Header().Set(`X-Cursor`, "header")

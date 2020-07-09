@@ -241,3 +241,9 @@ func (u *user) GetKondisiMenyimpang() ([]models.KondisiMenyimpang, error) {
 
 	return res, err
 }
+
+func (u *user) UpdateKondisiMenyimpang(m models.KondisiMenyimpang) error {
+	err := u.userRepo.UpdateKondisiMenyimpang(m)
+
+	return err
+}

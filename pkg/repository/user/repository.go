@@ -15,6 +15,7 @@ type Repository interface {
 	UpdatePassword(newPass string, userID int64) error
 	//manage data dynamic
 	GetKondisiMenyimpang() ([]models.KondisiMenyimpang, error)
+	UpdateKondisiMenyimpang(m models.KondisiMenyimpang) error
 }
 
 type RepositoryRedis interface {

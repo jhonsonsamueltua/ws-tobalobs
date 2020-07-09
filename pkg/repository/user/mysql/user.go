@@ -125,3 +125,19 @@ func (r *user) GetKondisiMenyimpang() ([]models.KondisiMenyimpang, error) {
 
 	return res, nil
 }
+
+func (r *user) UpdateKondisiMenyimpang(m models.KondisiMenyimpang) error {
+	statement, err := r.DB.Prepare(QueryUpdateKondisi)
+	if err != nil {
+		log.Println("[Repository][UpdateKondisiMenyimpang][Prepare] Error : ", err)
+		return err
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(m.AksiPenyimpangan, m.Kondisi, m.Tipe, m.Nilai, m.ID)
+	if err != nil {
+		log.Println("[Repository][UpdateKondisiMenyimpang][Execute] Error : ", err)
+		return err
+	}
+	return err
+}

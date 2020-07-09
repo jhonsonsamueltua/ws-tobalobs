@@ -23,4 +23,13 @@ const (
 	`
 
 	queryGetAllKondisi = `SELECT penyimpangan_kondisi_tambak_id, aksi_penyimpangan, kondisi, tipe, nilai FROM penyimpangan_kondisi_tambak`
+	QueryUpdateKondisi = `
+		UPDATE penyimpangan_kondisi_tambak
+		SET 
+			aksi_penyimpangan = ?,
+			kondisi = ?,
+			tipe = ?,
+			nilai = ?
+		WHERE penyimpangan_kondisi_tambak_id = ?
+	`
 )

@@ -26,4 +26,5 @@ func InitUserHandler(e *echo.Echo, u userUsecase.Usecase) {
 
 	//manage dynamic content
 	e.GET("/api/penyimpangan-kondisi-tambak", handler.GetKondisiPenyimpangan)
+	e.PUT("/api/penyimpangan-kondisi-tambak/:id", handler.UpdateKondisiMenyimpang)
 }
