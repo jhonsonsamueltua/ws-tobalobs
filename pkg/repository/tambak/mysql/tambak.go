@@ -1,7 +1,12 @@
 package mysql
 
 import (
+	"errors"
+	"fmt"
 	"log"
+	"strconv"
+
+	"github.com/sfreiberg/simplessh"
 
 	"github.com/ws-tobalobs/pkg/models"
 )
@@ -104,20 +109,57 @@ func (r *tambak) GetLastMonitorTambak(tambakID int64) (models.MonitorTambak, err
 }
 
 func (r *tambak) CreateTambak(t models.Tambak) (int64, error) {
-	statement, err := r.DB.Prepare(queryInsertTambak)
+	tambakId := int64(0)
+	tx, err := r.DB.Begin()
 	if err != nil {
-		log.Println("[Repository][CreateTambak][Prepare] Error : ", err)
+		return tambakId, err
+	}
+
+	stmt, err := tx.Prepare(queryInsertTambak)
+	if err != nil {
+		tx.Rollback()
 		return 0, err
 	}
-	defer statement.Close()
+	defer stmt.Close()
 
-	res, err := statement.Exec(t.UserID, t.NamaTambak, t.Panjang, t.Lebar, t.JenisBudidaya, t.TanggalMulaiBudidaya, t.UsiaLobster, t.JumlahLobster, t.JumlahLobsterJantan, t.JumlahLobsterBetina, t.Status, t.PakanPagi, t.PakanSore, t.GantiAir)
+	res, err := stmt.Exec(t.UserID, t.NamaTambak, t.Panjang, t.Lebar, t.JenisBudidaya, t.TanggalMulaiBudidaya, t.UsiaLobster, t.JumlahLobster, t.JumlahLobsterJantan, t.JumlahLobsterBetina, t.Status, t.PakanPagi, t.PakanSore, t.GantiAir)
 	if err != nil {
 		log.Println("[Repository][CreateTambak][Execute] Error : ", err)
 		return 0, err
 	}
-	tambakId, _ := res.LastInsertId()
+
+	tambakId, _ = res.LastInsertId()
+	err = execute(tambakId)
+	if err != nil {
+		log.Println("Error remote raspberry")
+		tx.Rollback()
+		str := fmt.Sprintf("Gagal menghubungkan ke perangkat IOT dengan error : %s", err.Error())
+		er := errors.New(str)
+		return 0, er
+	}
+	tx.Commit()
+
 	return tambakId, err
+}
+
+func execute(tambakID int64) error {
+	tambakIDStr := strconv.FormatInt(tambakID, 10)
+	var client *simplessh.Client
+	var err error
+
+	if client, err = simplessh.ConnectWithPassword("2.tcp.ngrok.io:16539", "pi", "raspberry"); err != nil {
+		// log.Println(err)
+		return err
+	}
+
+	// Now run the commands on the remote machine:
+	cmd := fmt.Sprintf("./sketchbook/tobalobs/script-remote.sh %s &", tambakIDStr)
+	if _, err := client.Exec(cmd); err != nil {
+		log.Println(err)
+	}
+	defer client.Close()
+
+	return err
 }
 
 func (r *tambak) UpdateTambak(m models.Tambak) error {

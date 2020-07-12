@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"log"
 	"math"
-	"os/exec"
 	"strconv"
 	"time"
+
+	"github.com/sfreiberg/simplessh"
 
 	"github.com/ws-tobalobs/pkg/models"
 )
@@ -49,7 +50,7 @@ func (u *tambak) CreateTambak(t models.Tambak) (int64, error) {
 	tambakID, err := u.tambakRepo.CreateTambak(t)
 	if err == nil {
 		// remote raspberry
-		execute(tambakID)
+		// execute(tambakID)
 
 		//store notif guideline to db
 		// loc, _ := time.LoadLocation("Asia/Jakarta")
@@ -234,13 +235,31 @@ func (u *tambak) UpdateJadwal(tambakID int64, val string, _type string) error {
 	return err
 }
 
-func execute(tambakID int64) {
+func execute(tambakID int64) error {
 	tambakIDStr := strconv.FormatInt(tambakID, 10)
-	log.Println("./script/script.sh " + tambakIDStr)
-	cmd := exec.Command("./script/script.sh", tambakIDStr, "&")
-	err := cmd.Run()
-	fmt.Println("Finished:", err)
-	if err != nil {
-		fmt.Printf("%s", err)
+	// log.Println("./script/script.sh " + tambakIDStr)
+	// cmd := exec.Command("./script/script.sh", tambakIDStr, "&")
+	// ssh -l pi proxy73.rt3.io -p 35745 ./sketchbook/tobalobs/script-remote.sh $1 &
+	// cmd := exec.LookPath
+	// cmd := exec.Command("ssh", "pi@0.tcp.ngrok.io -p 18899", "./sketchbook/tobalobs/script-remote.sh", tambakIDStr, "&")
+	// err := cmd.Run()
+	// fmt.Println("Finished:", err)
+	// if err != nil {
+	// 	fmt.Printf("%s", err)
+	// }
+	var client *simplessh.Client
+	var err error
+
+	if client, err = simplessh.ConnectWithPassword("2.tcp.ngrok.io:18899", "pi", "raspberry"); err != nil {
+		log.Println(err)
 	}
+
+	// Now run the commands on the remote machine:
+	cmd := fmt.Sprintf("./sketchbook/tobalobs/script-remote.sh %s &", tambakIDStr)
+	if _, err := client.Exec(cmd); err != nil {
+		log.Println(err)
+	}
+	defer client.Close()
+
+	return err
 }
