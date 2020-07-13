@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"os/exec"
 	"strconv"
 
 	"github.com/sfreiberg/simplessh"
@@ -146,18 +147,26 @@ func execute(tambakID int64) error {
 	tambakIDStr := strconv.FormatInt(tambakID, 10)
 	var client *simplessh.Client
 	var err error
-
-	if client, err = simplessh.ConnectWithPassword("2.tcp.ngrok.io:16539", "pi", "raspberry"); err != nil {
+	host := "2.tcp.ngrok.io"
+	port := "19804"
+	hostClient := fmt.Sprintf("%s:%s", host, port)
+	if client, err = simplessh.ConnectWithPassword(hostClient, "pi", "raspberry"); err != nil {
 		// log.Println(err)
 		return err
 	}
 
 	// Now run the commands on the remote machine:
-	cmd := fmt.Sprintf("./sketchbook/tobalobs/script-remote.sh %s &", tambakIDStr)
-	if _, err := client.Exec(cmd); err != nil {
+	comm := fmt.Sprintf("sed -i '$ a python sketchbook/tobalobs/monitor-tambak.py %s &' sketchbook/tobalobs/script.sh", tambakIDStr)
+	if _, err := client.Exec(comm); err != nil {
 		log.Println(err)
 	}
 	defer client.Close()
+
+	cmd := exec.Command("./var/www/go/src/github.com/ws-tobalobs/script/script.sh", "2.tcp.ngrok.io", "19804", tambakIDStr, "&")
+	err = cmd.Run()
+	if err != nil {
+		fmt.Printf("%s", err)
+	}
 
 	return err
 }
