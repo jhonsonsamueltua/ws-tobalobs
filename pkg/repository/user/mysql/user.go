@@ -141,3 +141,56 @@ func (r *user) UpdateKondisiMenyimpang(m models.KondisiMenyimpang) error {
 	}
 	return err
 }
+
+func (r *user) GetDeviceID(userID int64) []string {
+	res := []string{}
+	statement, err := r.DB.Prepare(queryGetDeviceID)
+	if err != nil {
+		log.Println("[Repository][GetDeviceID][Prepare] Error : ", err)
+		return res
+	}
+	rows, err := statement.Query(userID)
+	if err != nil {
+		log.Println("Repository error : ", err)
+		return res
+	}
+
+	for rows.Next() {
+		var deviceId string
+		err := rows.Scan(&deviceId)
+		if err != nil {
+			log.Println(err)
+		}
+		res = append(res, deviceId)
+	}
+
+	return res
+}
+
+func (r *user) SaveDeviceID(userID int64, deviceID string) {
+	statement, err := r.DB.Prepare(querySaveDeviceID)
+	if err != nil {
+		log.Println("[Repository][SaveDeviceID][Prepare] Error : ", err)
+	}
+
+	defer statement.Close()
+
+	_, err = statement.Exec(userID, deviceID)
+	if err != nil {
+		log.Println("[Repository][SaveDeviceID][Execute] Error : ", err)
+	}
+}
+
+func (r *user) DeleteDeviceID(userID int64, deviceID string) {
+	statement, err := r.DB.Prepare(queryDeleteDeviceID)
+	if err != nil {
+		log.Println("[Repository][DeleteDeviceID][Prepare] Error : ", err)
+	}
+
+	defer statement.Close()
+
+	_, err = statement.Exec(userID, deviceID)
+	if err != nil {
+		log.Println("[Repository][DeleteDeviceID][Execute] Error : ", err)
+	}
+}

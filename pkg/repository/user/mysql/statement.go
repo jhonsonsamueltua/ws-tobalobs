@@ -32,4 +32,7 @@ const (
 			nilai = ?
 		WHERE penyimpangan_kondisi_tambak_id = ?
 	`
+	queryGetDeviceID    = `SELECT device_id FROM device_user WHERE user_id = ?`
+	querySaveDeviceID   = `INSERT INTO device_user (user_id, device_id) VALUES (?, ?)`
+	queryDeleteDeviceID = `DELETE FROM device_user WHERE user_id = ? AND device_id = ?`
 )

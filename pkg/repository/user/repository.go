@@ -16,6 +16,10 @@ type Repository interface {
 	//manage data dynamic
 	GetKondisiMenyimpang() ([]models.KondisiMenyimpang, error)
 	UpdateKondisiMenyimpang(m models.KondisiMenyimpang) error
+	//device id
+	GetDeviceID(userID int64) []string
+	SaveDeviceID(userID int64, deviceID string)
+	DeleteDeviceID(userID int64, deviceID string)
 }
 
 type RepositoryRedis interface {

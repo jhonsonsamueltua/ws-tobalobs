@@ -23,3 +23,9 @@ type Token struct {
 	UserId int64
 	jwt.StandardClaims
 }
+
+type Device struct {
+	ID     int64
+	UserID int64
+	DeviceID string
+}

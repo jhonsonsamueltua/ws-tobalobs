@@ -165,8 +165,11 @@ func (u *user) Login(username string, password string, deviceID string) (string,
 		}
 
 		//save deviceID to redis with key userID
-		key := fmt.Sprint("device:", users.UserID)
-		u.userRepoRedis.SaveDeviceID(key, deviceID)
+		// key := fmt.Sprint("device:", users.UserID)
+		// u.userRepoRedis.SaveDeviceID(key, deviceID)
+		//save deviceID to mysql
+		u.userRepo.DeleteDeviceID(users.UserID, deviceID)
+		u.userRepo.SaveDeviceID(users.UserID, deviceID)
 
 		//cek table notif status pending
 
@@ -190,8 +193,10 @@ func (u *user) Logout(token, deviceID string, userID int64) error {
 	err = u.userRepoRedis.Logout(token, getTokenRemainingValidity(exp))
 
 	//remove deviceID that use for notif
-	key := fmt.Sprint("device:", userID)
-	u.userRepoRedis.RemoveDeviceID(key, deviceID)
+	// key := fmt.Sprint("device:", userID)
+	// u.userRepoRedis.RemoveDeviceID(key, deviceID)
+	//remove device id from mysql
+	u.userRepo.DeleteDeviceID(userID, deviceID)
 
 	return err
 }

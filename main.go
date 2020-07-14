@@ -87,11 +87,12 @@ func main() {
 }
 
 func tambak(e *echo.Echo, db *sql.DB, fcm *messaging.Client, redis *redis.Client) {
+	userRepo := userRepo.InitUserRepo(db)
 	tambakRepo := tambakRepo.InitTambakRepo(db)
 	fcmNotifRepo := fcmNotifRepo.InitFCMRepo(fcm)
 	redisNotifRepo := redisNotifRepo.InitRedisRepo(redis)
 	mysqlNotifRepo := mysqlNotifRepo.InitNotifRepo(db)
-	tambakUsecase := tambakUseCase.InitTambakUsecase(tambakRepo, fcmNotifRepo, redisNotifRepo, mysqlNotifRepo)
+	tambakUsecase := tambakUseCase.InitTambakUsecase(tambakRepo, fcmNotifRepo, redisNotifRepo, mysqlNotifRepo, userRepo)
 	tambakDeliver.InitTambakHandler(e, tambakUsecase)
 }
 
@@ -114,10 +115,11 @@ func user(e *echo.Echo, db *sql.DB, conf *models.Config, redis *redis.Client) {
 }
 
 func cron(db *sql.DB, fcm *messaging.Client, redis *redis.Client) {
+	userRepo := userRepo.InitUserRepo(db)
 	tambakRepo := tambakRepo.InitTambakRepo(db)
 	fcmNotifRepo := fcmNotifRepo.InitFCMRepo(fcm)
 	redisNotifRepo := redisNotifRepo.InitRedisRepo(redis)
 	mysqlNotifRepo := mysqlNotifRepo.InitNotifRepo(db)
-	cron := cronUseCase.InitCronUsecase(tambakRepo, fcmNotifRepo, redisNotifRepo, mysqlNotifRepo)
+	cron := cronUseCase.InitCronUsecase(tambakRepo, fcmNotifRepo, redisNotifRepo, mysqlNotifRepo, userRepo)
 	cron.InitCron()
 }

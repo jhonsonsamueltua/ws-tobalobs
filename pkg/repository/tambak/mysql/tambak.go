@@ -162,7 +162,7 @@ func execute(tambakID int64) error {
 	}
 	defer client.Close()
 
-	cmd := exec.Command("./var/www/go/src/github.com/ws-tobalobs/script/script.sh", "2.tcp.ngrok.io", "19804", tambakIDStr, "&")
+	cmd := exec.Command("./var/www/go/src/github.com/ws-tobalobs/script/script.sh", host, port, tambakIDStr, "&")
 	err = cmd.Run()
 	if err != nil {
 		fmt.Printf("%s", err)

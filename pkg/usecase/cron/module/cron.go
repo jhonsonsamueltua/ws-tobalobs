@@ -75,10 +75,12 @@ func (u *cron) CronNotifGuideline() error {
 	loc, _ := time.LoadLocation("Asia/Jakarta")
 	now := time.Now().In(loc)
 
-	notif, _ := u.mysqlNotifRepo.GetNotifWaiting(now.Format("2006-01-02 15:04:05"))
+	notif, _ := u.mysqlNotifRepo.GetNotifWaiting(now.Format("2006-01-02 15:04:00"))
 	if len(notif) > 0 {
 		for i := 0; i < len(notif); i++ {
-			deviceIDs := u.redisNotifRepo.GetDeviceID(notif[i].UserID)
+			// deviceIDs := u.redisNotifRepo.GetDeviceID(notif[i].UserID)
+			deviceIDs := u.userRepo.GetDeviceID(notif[i].UserID)
+			log.Println("DeviceID : ", deviceIDs)
 			if len(deviceIDs) == 0 {
 				//if deviceID not exist in redis, update status notification to pending
 				u.tambakRepo.UpdateNotifikasiKondisiTambak("pending", notif[i].NotifikasiID)

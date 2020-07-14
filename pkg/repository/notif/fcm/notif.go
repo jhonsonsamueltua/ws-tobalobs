@@ -27,7 +27,7 @@ func (r *FCM) PushNotification(deviceID []string, msg models.MessagePushNotif) {
 	if err != nil {
 		log.Fatalln(err)
 	}
-
+	// log.Println("succes : ", br.SuccessCount)
 	if br.FailureCount > 0 {
 		var failedTokens []string
 		for idx, resp := range br.Responses {
