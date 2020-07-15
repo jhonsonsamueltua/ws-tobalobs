@@ -99,28 +99,42 @@ func (u *tambak) CreateTambak(t models.Tambak) (int64, error) {
 			interval, _ := strconv.Atoi(g.Interval)
 			if g.TipeBudidaya == "pembesaran" || g.TipeBudidaya == "semua" {
 				if g.TipeJadwal == "sekali" {
-					dt = now.AddDate(0, 0, interval)
-					n.GuidelineID = g.GuidelineID
-					n.Keterangan = g.Notifikasi
-					n.WaktuTanggal = fmt.Sprintf("%s %s:00", dt.Format("2006-01-02"), g.Waktu)
-					_, err := u.mysqlNotifRepo.SaveNotifGuideline(n)
-					if err != nil {
-						log.Println(err)
-					}
-				} else if g.TipeJadwal == "berulang" && interval > 5 {
-					lamaBudidaya := 8 - t.UsiaLobster
-					for i := 1; i <= (lamaBudidaya * 30 / interval); i++ {
-						if i == 1 {
-							dt = now.AddDate(0, 0, interval)
-						} else {
-							dt = dt.AddDate(0, 0, interval)
-						}
+					if interval == 0 { // interval 0 artinya tergantung umur lobster
+						lamaBudidaya := 8 - t.UsiaLobster
+						dt = now.AddDate(0, 0, lamaBudidaya*30)
 						n.GuidelineID = g.GuidelineID
 						n.Keterangan = g.Notifikasi
 						n.WaktuTanggal = fmt.Sprintf("%s %s:00", dt.Format("2006-01-02"), g.Waktu)
 						_, err := u.mysqlNotifRepo.SaveNotifGuideline(n)
 						if err != nil {
 							log.Println(err)
+						}
+					} else {
+						dt = now.AddDate(0, 0, interval)
+						n.GuidelineID = g.GuidelineID
+						n.Keterangan = g.Notifikasi
+						n.WaktuTanggal = fmt.Sprintf("%s %s:00", dt.Format("2006-01-02"), g.Waktu)
+						_, err := u.mysqlNotifRepo.SaveNotifGuideline(n)
+						if err != nil {
+							log.Println(err)
+						}
+					}
+				} else if g.TipeJadwal == "berulang" {
+					lamaBudidaya := 8 - t.UsiaLobster
+					if interval > 5 {
+						for i := 1; i <= (lamaBudidaya * 30 / interval); i++ {
+							if i == 1 {
+								dt = now.AddDate(0, 0, interval)
+							} else {
+								dt = dt.AddDate(0, 0, interval)
+							}
+							n.GuidelineID = g.GuidelineID
+							n.Keterangan = g.Notifikasi
+							n.WaktuTanggal = fmt.Sprintf("%s %s:00", dt.Format("2006-01-02"), g.Waktu)
+							_, err := u.mysqlNotifRepo.SaveNotifGuideline(n)
+							if err != nil {
+								log.Println(err)
+							}
 						}
 					}
 				}
