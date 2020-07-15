@@ -56,4 +56,17 @@ const (
 	queryUpdateJadwalGantiAir = `
 		UPDATE tambak SET ganti_air = ? WHERE tambak_id = ?
 	`
+	queryGetAllGuideline = `SELECT guideline_id, aksi_guideline, notifikasi, tipe_budidaya, tipe_jadwal, interval_value, waktu FROM guideline`
+	queryAddGuideline    = `INSERT INTO guideline (aksi_guideline, notifikasi, tipe_budidaya, tipe_jadwal, interval_value, waktu) VALUES (?, ?, ?, ?, ?, ?)`
+	queryUpdateGuideline = `
+		UPDATE guideline
+		SET 
+			aksi_guideline = ?,
+			notifikasi = ?,
+			tipe_budidaya = ?,
+			tipe_jadwal = ?,
+			interval_value = ?,
+			waktu = ?
+		WHERE guideline_id = ?
+	`
 )

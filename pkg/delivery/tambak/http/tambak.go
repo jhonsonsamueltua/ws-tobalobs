@@ -137,8 +137,6 @@ func (d *tambak) CreateTambak(c echo.Context) error {
 	tambakId, err := d.tambakUsecase.CreateTambak(t)
 	if err != nil {
 		log.Println(err)
-		resp.Data = nil
-		resp.Status = models.StatusFailed
 		resp.Message = err.Error()
 		c.Response().Header().Set(`X-Cursor`, "header")
 		return c.JSON(http.StatusInternalServerError, resp)
@@ -186,7 +184,6 @@ func (d *tambak) UpdateTambak(c echo.Context) error {
 	err := d.tambakUsecase.UpdateTambak(t)
 	if err != nil {
 		log.Println(err)
-		resp.Status = models.StatusFailed
 		resp.Message = err.Error()
 		c.Response().Header().Set(`X-Cursor`, "header")
 		return c.JSON(http.StatusInternalServerError, resp)
@@ -225,8 +222,6 @@ func (d *tambak) PostMonitorTambak(c echo.Context) error {
 	monitorTambakID, err := d.tambakUsecase.PostMonitorTambak(m)
 	if err != nil {
 		log.Println(err)
-		resp.Data = nil
-		resp.Status = models.StatusFailed
 		resp.Message = err.Error()
 		c.Response().Header().Set(`X-Cursor`, "header")
 		return c.JSON(http.StatusInternalServerError, resp)
@@ -264,8 +259,6 @@ func (d *tambak) PostPenyimpanganKondisiTambak(c echo.Context) error {
 	err := d.tambakUsecase.PostPenyimpanganKondisiTambak(n)
 	if err != nil {
 		log.Println(err)
-		resp.Data = nil
-		resp.Status = models.StatusFailed
 		resp.Message = err.Error()
 		c.Response().Header().Set(`X-Cursor`, "header")
 		return c.JSON(http.StatusInternalServerError, resp)
@@ -290,8 +283,6 @@ func (d *tambak) GetAllInfo(c echo.Context) error {
 	allInfo, err := d.tambakUsecase.GetAllInfo()
 	if err != nil {
 		log.Println(err)
-		resp.Data = nil
-		resp.Status = models.StatusFailed
 		resp.Message = err.Error()
 		c.Response().Header().Set(`X-Cursor`, "header")
 		return c.JSON(http.StatusInternalServerError, resp)
@@ -321,7 +312,6 @@ func (d *tambak) CreateInfo(c echo.Context) error {
 
 	err := d.tambakUsecase.CreateInfo(i)
 	if err != nil {
-		resp.Data = nil
 		resp.Message = err.Error()
 		c.Response().Header().Set(`X-Cursor`, "header")
 		return c.JSON(http.StatusInternalServerError, resp)
@@ -352,7 +342,6 @@ func (d *tambak) UpdateInfo(c echo.Context) error {
 
 	err := d.tambakUsecase.UpdateInfo(i)
 	if err != nil {
-		resp.Data = nil
 		resp.Message = err.Error()
 		c.Response().Header().Set(`X-Cursor`, "header")
 		return c.JSON(http.StatusInternalServerError, resp)
@@ -376,7 +365,6 @@ func (d *tambak) DeleteInfo(c echo.Context) error {
 
 	err := d.tambakUsecase.DeleteInfo(infoID)
 	if err != nil {
-		resp.Data = nil
 		resp.Message = err.Error()
 		c.Response().Header().Set(`X-Cursor`, "header")
 		return c.JSON(http.StatusInternalServerError, resp)
@@ -400,7 +388,6 @@ func (d *tambak) GetAllPanduan(c echo.Context) error {
 	panduan, err := d.tambakUsecase.GetAllPanduan()
 	if err != nil {
 		log.Println(err)
-		resp.Data = nil
 		resp.Status = models.StatusFailed
 		resp.Message = err.Error()
 		c.Response().Header().Set(`X-Cursor`, "header")
@@ -431,7 +418,6 @@ func (d *tambak) CreatePanduan(c echo.Context) error {
 
 	err := d.tambakUsecase.CreatePanduan(p)
 	if err != nil {
-		resp.Data = nil
 		resp.Message = err.Error()
 		c.Response().Header().Set(`X-Cursor`, "header")
 		return c.JSON(http.StatusInternalServerError, resp)
@@ -462,7 +448,6 @@ func (d *tambak) UpdatePanduan(c echo.Context) error {
 
 	err := d.tambakUsecase.UpdatePanduan(p)
 	if err != nil {
-		resp.Data = nil
 		resp.Message = err.Error()
 		c.Response().Header().Set(`X-Cursor`, "header")
 		return c.JSON(http.StatusInternalServerError, resp)
@@ -486,7 +471,6 @@ func (d *tambak) DeletePanduan(c echo.Context) error {
 
 	err := d.tambakUsecase.DeletePanduan(panduanID)
 	if err != nil {
-		resp.Data = nil
 		resp.Message = err.Error()
 		c.Response().Header().Set(`X-Cursor`, "header")
 		return c.JSON(http.StatusInternalServerError, resp)
@@ -513,8 +497,6 @@ func (d *tambak) GetMonitorTambak(c echo.Context) error {
 	m, err := d.tambakUsecase.GetMonitorTambak(tambakID, tanggal)
 	if err != nil {
 		log.Println(err)
-		resp.Data = nil
-		resp.Status = models.StatusFailed
 		resp.Message = err.Error()
 		c.Response().Header().Set(`X-Cursor`, "header")
 		return c.JSON(http.StatusInternalServerError, resp)
@@ -542,6 +524,104 @@ func (d *tambak) UpdateJadwal(c echo.Context) error {
 	err := d.tambakUsecase.UpdateJadwal(tambakID, val, _type)
 	if err != nil {
 		resp.Data = nil
+		resp.Message = err.Error()
+		c.Response().Header().Set(`X-Cursor`, "header")
+		return c.JSON(http.StatusInternalServerError, resp)
+	}
+
+	resp.Status = models.StatusSucces
+	resp.Message = models.MessageSucces
+	c.Response().Header().Set(`X-Cursor`, "header")
+	return c.JSON(http.StatusOK, resp)
+}
+
+func (d *tambak) GetAllGuideline(c echo.Context) error {
+	var resp models.Responses
+	resp.Status = models.StatusFailed
+
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	res, err := d.tambakUsecase.GetAllGuideline()
+	if err != nil {
+		log.Println(err)
+		resp.Message = err.Error()
+		c.Response().Header().Set(`X-Cursor`, "header")
+		return c.JSON(http.StatusInternalServerError, resp)
+	}
+
+	resp.Data = res
+	resp.Status = models.StatusSucces
+	resp.Message = models.MessageSucces
+	c.Response().Header().Set(`X-Cursor`, "header")
+	return c.JSON(http.StatusOK, resp)
+}
+
+func (d *tambak) CreateGuideline(c echo.Context) error {
+	var resp models.Responses
+	resp.Status = models.StatusFailed
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	aksi := c.FormValue("aksiGuideline")
+	notifikasi := c.FormValue("notifikasi")
+	tipeBudidaya := c.FormValue("tipeBudidaya")
+	tipeJadwal := c.FormValue("tipeJadwal")
+	interval := c.FormValue("interval")
+	waktu := c.FormValue("waktu")
+
+	g := models.Guideline{}
+	g.AksiGuideline = aksi
+	g.Notifikasi = notifikasi
+	g.TipeBudidaya = tipeBudidaya
+	g.TipeJadwal = tipeJadwal
+	g.Interval = interval
+	g.Waktu = waktu
+
+	err := d.tambakUsecase.CreateGuideline(g)
+	if err != nil {
+		resp.Message = err.Error()
+		c.Response().Header().Set(`X-Cursor`, "header")
+		return c.JSON(http.StatusInternalServerError, resp)
+	}
+
+	resp.Status = models.StatusSucces
+	resp.Message = models.MessageSucces
+	c.Response().Header().Set(`X-Cursor`, "header")
+	return c.JSON(http.StatusOK, resp)
+}
+
+func (d *tambak) UpdateGuideline(c echo.Context) error {
+	var resp models.Responses
+	resp.Status = models.StatusFailed
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	ID, _ := strconv.ParseInt(c.Param("guidelineID"), 10, 64)
+	aksi := c.FormValue("aksiGuideline")
+	notifikasi := c.FormValue("notifikasi")
+	tipeBudidaya := c.FormValue("tipeBudidaya")
+	tipeJadwal := c.FormValue("tipeJadwal")
+	interval := c.FormValue("interval")
+	waktu := c.FormValue("waktu")
+
+	g := models.Guideline{}
+	g.GuidelineID = ID
+	g.AksiGuideline = aksi
+	g.Notifikasi = notifikasi
+	g.TipeBudidaya = tipeBudidaya
+	g.TipeJadwal = tipeJadwal
+	g.Interval = interval
+	g.Waktu = waktu
+
+	err := d.tambakUsecase.UpdateGuideline(g)
+	if err != nil {
 		resp.Message = err.Error()
 		c.Response().Header().Set(`X-Cursor`, "header")
 		return c.JSON(http.StatusInternalServerError, resp)

@@ -75,3 +75,13 @@ type Panduan struct {
 	Judul             string `json:"judul"`
 	Penjelasan        string `json:"penjelasan"`
 }
+
+type Guideline struct {
+	GuidelineID   int64  `json:"guidelineID"`
+	AksiGuideline string `json:"aksiGuideline"`
+	Notifikasi    string `json:"notifikasi"`
+	TipeBudidaya  string `json:"tipeBudidaya"`
+	TipeJadwal    string `json:"tipeJadwal"`
+	Interval      string `json:"interval"`
+	Waktu         string `json:"waktu"`
+}

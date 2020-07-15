@@ -25,4 +25,9 @@ type Repository interface {
 	UpdatePanduan(models.Panduan) error
 	DeletePanduan(int64) error
 	UpdateJadwal(tambakID int64, val string, _type string) error
+
+	// GUIDELINE
+	GetAllGuideline() ([]models.Guideline, error)
+	CreateGuideline(models.Guideline) error
+	UpdateGuideline(m models.Guideline) error
 }

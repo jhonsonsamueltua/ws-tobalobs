@@ -130,7 +130,7 @@ func (r *tambak) CreateTambak(t models.Tambak) (int64, error) {
 	}
 
 	tambakId, _ = res.LastInsertId()
-	err = execute(tambakId)
+	// err = execute(tambakId)
 	if err != nil {
 		log.Println("Error remote raspberry")
 		tx.Rollback()
@@ -454,5 +454,61 @@ func (r *tambak) UpdateJadwal(tambakID int64, val string, _type string) error {
 		log.Println("[Repository][UpdateJadwal][Execute] Error : ", err)
 	}
 
+	return err
+}
+
+func (r *tambak) GetAllGuideline() ([]models.Guideline, error) {
+	res := []models.Guideline{}
+	statement, err := r.DB.Prepare(queryGetAllGuideline)
+	if err != nil {
+		log.Println("[Repository][GetAllGuideline][Prepare] Error : ", err)
+		return res, err
+	}
+	rows, err := statement.Query()
+	if err != nil {
+		log.Println("Repository error : ", err)
+		return res, err
+	}
+
+	for rows.Next() {
+		r := models.Guideline{}
+		err := rows.Scan(&r.GuidelineID, &r.AksiGuideline, &r.Notifikasi, &r.TipeBudidaya, &r.TipeJadwal, &r.Interval, &r.Waktu)
+		if err != nil {
+			log.Println(err)
+		}
+		res = append(res, r)
+	}
+
+	return res, nil
+}
+
+func (r *tambak) CreateGuideline(m models.Guideline) error {
+	statement, err := r.DB.Prepare(queryAddGuideline)
+	if err != nil {
+		log.Println("[Repository][CreateGuideline][Prepare] Error : ", err)
+		return err
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(m.AksiGuideline, m.Notifikasi, m.TipeBudidaya, m.TipeJadwal, m.Interval, m.Waktu)
+	if err != nil {
+		log.Println("[Repository][CreateGuideline][Execute] Error : ", err)
+	}
+	return err
+}
+
+func (r *tambak) UpdateGuideline(m models.Guideline) error {
+	statement, err := r.DB.Prepare(queryUpdateGuideline)
+	if err != nil {
+		log.Println("[Repository][UpdateGuideline][Prepare] Error : ", err)
+		return err
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(m.AksiGuideline, m.Notifikasi, m.TipeBudidaya, m.TipeJadwal, m.Interval, m.Waktu, m.GuidelineID)
+	if err != nil {
+		log.Println("[Repository][UpdateGuideline][Execute] Error : ", err)
+		return err
+	}
 	return err
 }
