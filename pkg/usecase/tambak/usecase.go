@@ -25,4 +25,8 @@ type Usecase interface {
 	GetAllGuideline() ([]models.Guideline, error)
 	CreateGuideline(m models.Guideline) error
 	UpdateGuideline(m models.Guideline) error
+
+	// TUNNEL
+	GetTunnel() models.Tunnel
+	SaveTunnel(models.Tunnel)
 }

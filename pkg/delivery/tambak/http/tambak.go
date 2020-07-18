@@ -632,3 +632,26 @@ func (d *tambak) UpdateGuideline(c echo.Context) error {
 	c.Response().Header().Set(`X-Cursor`, "header")
 	return c.JSON(http.StatusOK, resp)
 }
+
+func (d *tambak) SaveTunnel(c echo.Context) error {
+	var resp models.Responses
+	resp.Status = models.StatusFailed
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	ip := c.FormValue("ip")
+	port := c.FormValue("port")
+
+	t := models.Tunnel{}
+	t.IP = ip
+	t.Port = port
+
+	d.tambakUsecase.SaveTunnel(t)
+
+	resp.Status = models.StatusSucces
+	resp.Message = models.MessageSucces
+	c.Response().Header().Set(`X-Cursor`, "header")
+	return c.JSON(http.StatusOK, resp)
+}

@@ -130,7 +130,7 @@ func (r *tambak) CreateTambak(t models.Tambak) (int64, error) {
 	}
 
 	tambakId, _ = res.LastInsertId()
-	// err = execute(tambakId)
+	// err = r.execute(tambakId)
 	if err != nil {
 		log.Println("Error remote raspberry")
 		tx.Rollback()
@@ -143,12 +143,16 @@ func (r *tambak) CreateTambak(t models.Tambak) (int64, error) {
 	return tambakId, err
 }
 
-func execute(tambakID int64) error {
+func (r *tambak) execute(tambakID int64) error {
 	tambakIDStr := strconv.FormatInt(tambakID, 10)
 	var client *simplessh.Client
 	var err error
-	host := "2.tcp.ngrok.io"
-	port := "19804"
+
+	// get tunnel
+	tunnel := r.GetTunnel()
+
+	host := tunnel.IP
+	port := tunnel.Port
 	hostClient := fmt.Sprintf("%s:%s", host, port)
 	if client, err = simplessh.ConnectWithPassword(hostClient, "pi", "raspberry"); err != nil {
 		// log.Println(err)
@@ -511,4 +515,43 @@ func (r *tambak) UpdateGuideline(m models.Guideline) error {
 		return err
 	}
 	return err
+}
+
+func (r *tambak) GetTunnel() models.Tunnel {
+	res := models.Tunnel{}
+	statement, err := r.DB.Prepare(queryGetTunnel)
+	if err != nil {
+		log.Println("[Repository][GetTunnel][Prepare] Error : ", err)
+		return res
+	}
+	rows, err := statement.Query()
+	if err != nil {
+		log.Println("Repository error : ", err)
+		return res
+	}
+
+	for rows.Next() {
+		err := rows.Scan(&res.ID, &res.IP, &res.Port)
+		if err != nil {
+			log.Println("[Repository][GetTunnel][Scan] Error : ", err)
+			return res
+		}
+	}
+
+	return res
+}
+
+func (r *tambak) SaveTunnel(m models.Tunnel) {
+	statement, err := r.DB.Prepare(queryUpdateTunnel)
+	if err != nil {
+		log.Println("[Repository][SaveTunnel][Prepare] Error : ", err)
+		return
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(m.IP, m.Port)
+	if err != nil {
+		log.Println("[Repository][SaveTunnel][Execute] Error : ", err)
+	}
+	return
 }

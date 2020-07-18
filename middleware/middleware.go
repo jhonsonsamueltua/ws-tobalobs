@@ -44,7 +44,7 @@ func (m *GoMiddleware) CORS(next echo.HandlerFunc) echo.HandlerFunc {
 
 func (m *GoMiddleware) JwtAuthentication(next echo.HandlerFunc) echo.HandlerFunc {
 	return echo.HandlerFunc(func(c echo.Context) error {
-		notAuth := []string{"/api/penyimpangan-kondisi-tambak", "/api/user/login", "/api/user/register", "/api/tambak/monitor", "/api/tambak/monitor-menyimpang", "/api/user/verify", "/api/user/forgot"}
+		notAuth := []string{"/api/penyimpangan-kondisi-tambak", "/api/user/login", "/api/user/register", "/api/tambak/monitor", "/api/tambak/monitor-menyimpang", "/api/user/verify", "/api/user/forgot", "api/save-tunnel"}
 		requestPath := c.Request().URL.Path
 		for _, value := range notAuth {
 			if value == requestPath {

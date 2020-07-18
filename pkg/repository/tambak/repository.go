@@ -30,4 +30,8 @@ type Repository interface {
 	GetAllGuideline() ([]models.Guideline, error)
 	CreateGuideline(models.Guideline) error
 	UpdateGuideline(m models.Guideline) error
+
+	// TUNNEL
+	GetTunnel() models.Tunnel
+	SaveTunnel(models.Tunnel)
 }

@@ -38,4 +38,7 @@ func InitTambakHandler(e *echo.Echo, u tambakUsecase.Usecase) {
 	e.GET("/api/guideline", handler.GetAllGuideline)
 	e.POST("/api/guideline", handler.CreateGuideline)
 	e.PUT("/api/guideline/:guidelineID", handler.UpdateGuideline)
+
+	//TUNNEL
+	e.POST("/api/save-tunnel", handler.SaveTunnel)
 }

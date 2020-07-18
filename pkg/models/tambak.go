@@ -85,3 +85,9 @@ type Guideline struct {
 	Interval      string `json:"interval"`
 	Waktu         string `json:"waktu"`
 }
+
+type Tunnel struct {
+	ID int64 `json:"id"`
+	IP string `json:"ip"`
+	Port string `json:"port"`
+}
