@@ -130,7 +130,7 @@ func (r *tambak) CreateTambak(t models.Tambak) (int64, error) {
 	}
 
 	tambakId, _ = res.LastInsertId()
-	// err = r.execute(tambakId)
+	err = r.execute(tambakId)
 	if err != nil {
 		log.Println("Error remote raspberry")
 		tx.Rollback()
@@ -154,7 +154,7 @@ func (r *tambak) execute(tambakID int64) error {
 	host := tunnel.IP
 	port := tunnel.Port
 	hostClient := fmt.Sprintf("%s:%s", host, port)
-	if client, err = simplessh.ConnectWithPassword(hostClient, "pi", "raspberry"); err != nil {
+	if client, err = simplessh.ConnectWithPassword(hostClient, "pi", "tobalobs2020"); err != nil {
 		// log.Println(err)
 		return err
 	}
