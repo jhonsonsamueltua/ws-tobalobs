@@ -87,7 +87,14 @@ type Guideline struct {
 }
 
 type Tunnel struct {
-	ID int64 `json:"id"`
-	IP string `json:"ip"`
+	ID   int64  `json:"id"`
+	IP   string `json:"ip"`
 	Port string `json:"port"`
+}
+
+type KondisiSekarang struct {
+	PH   float64 `json:"ph"`
+	Suhu float64 `json:"suhu"`
+	DO   float64 `json:"do"`
+	Keterangan string `json:"keterangan"`
 }

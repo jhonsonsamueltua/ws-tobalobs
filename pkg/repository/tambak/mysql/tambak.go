@@ -1,9 +1,12 @@
 package mysql
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"log"
+	"net/http"
 	"os/exec"
 	"strconv"
 
@@ -149,7 +152,7 @@ func (r *tambak) execute(tambakID int64) error {
 	var err error
 
 	// get tunnel
-	tunnel := r.GetTunnel()
+	tunnel := r.GetTunnel(int64(1))
 
 	host := tunnel.IP
 	port := tunnel.Port
@@ -517,14 +520,14 @@ func (r *tambak) UpdateGuideline(m models.Guideline) error {
 	return err
 }
 
-func (r *tambak) GetTunnel() models.Tunnel {
+func (r *tambak) GetTunnel(ID int64) models.Tunnel {
 	res := models.Tunnel{}
 	statement, err := r.DB.Prepare(queryGetTunnel)
 	if err != nil {
 		log.Println("[Repository][GetTunnel][Prepare] Error : ", err)
 		return res
 	}
-	rows, err := statement.Query()
+	rows, err := statement.Query(ID)
 	if err != nil {
 		log.Println("Repository error : ", err)
 		return res
@@ -549,9 +552,33 @@ func (r *tambak) SaveTunnel(m models.Tunnel) {
 	}
 	defer statement.Close()
 
-	_, err = statement.Exec(m.IP, m.Port)
+	_, err = statement.Exec(m.IP, m.Port, m.ID)
 	if err != nil {
 		log.Println("[Repository][SaveTunnel][Execute] Error : ", err)
 	}
 	return
+}
+
+func (r *tambak) GetKondisiSekarang(ip string) (models.KondisiSekarang, error) {
+	res := models.KondisiSekarang{}
+	endpoint := fmt.Sprintf("%s/get-monitor", ip)
+	resp, err := http.Get(endpoint)
+	if err != nil {
+		return res, err
+	}
+
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return res, err
+	}
+
+	jsonErr := json.Unmarshal(body, &res)
+	if jsonErr != nil {
+		log.Fatal(jsonErr)
+	}
+
+	fmt.Printf("Results: %v\n", res)
+	return res, err
 }

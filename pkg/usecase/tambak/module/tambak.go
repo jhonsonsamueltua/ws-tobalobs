@@ -382,8 +382,8 @@ func (u *tambak) UpdateGuideline(m models.Guideline) error {
 	return err
 }
 
-func (u *tambak) GetTunnel() models.Tunnel {
-	res := u.tambakRepo.GetTunnel()
+func (u *tambak) GetTunnel(ID int64) models.Tunnel {
+	res := u.tambakRepo.GetTunnel(ID)
 
 	return res
 }
@@ -392,4 +392,12 @@ func (u *tambak) SaveTunnel(m models.Tunnel) {
 	u.tambakRepo.SaveTunnel(m)
 
 	return
+}
+
+func (u *tambak) GetKondisiSekarang() (models.KondisiSekarang, error) {
+	// get tunnel
+	tunnel := u.tambakRepo.GetTunnel(int64(2))
+	log.Println(tunnel.IP)
+	res, err := u.tambakRepo.GetKondisiSekarang(tunnel.IP)
+	return res, err
 }

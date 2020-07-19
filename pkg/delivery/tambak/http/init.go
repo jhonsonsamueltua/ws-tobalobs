@@ -33,6 +33,7 @@ func InitTambakHandler(e *echo.Echo, u tambakUsecase.Usecase) {
 	e.PUT("/api/panduan/:panduanAplikasiID", handler.UpdatePanduan)
 	e.DELETE("/api/panduan/:panduanAplikasiID", handler.DeletePanduan)
 	e.PUT("/api/jadwal/:tambakID", handler.UpdateJadwal)
+	e.GET("/api/get-kondisi-sekarang", handler.GetKondisiSekarang)
 
 	//GUIDELINE
 	e.GET("/api/guideline", handler.GetAllGuideline)

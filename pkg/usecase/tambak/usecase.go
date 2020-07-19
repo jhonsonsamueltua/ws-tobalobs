@@ -20,6 +20,7 @@ type Usecase interface {
 	UpdatePanduan(models.Panduan) error
 	DeletePanduan(int64) error
 	UpdateJadwal(tambakID int64, val string, _type string) error
+	GetKondisiSekarang() (models.KondisiSekarang, error)
 
 	// GUIDELINE
 	GetAllGuideline() ([]models.Guideline, error)
@@ -27,6 +28,6 @@ type Usecase interface {
 	UpdateGuideline(m models.Guideline) error
 
 	// TUNNEL
-	GetTunnel() models.Tunnel
+	GetTunnel(ID int64) models.Tunnel
 	SaveTunnel(models.Tunnel)
 }

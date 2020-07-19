@@ -25,6 +25,7 @@ type Repository interface {
 	UpdatePanduan(models.Panduan) error
 	DeletePanduan(int64) error
 	UpdateJadwal(tambakID int64, val string, _type string) error
+	GetKondisiSekarang(ip string) (models.KondisiSekarang, error)
 
 	// GUIDELINE
 	GetAllGuideline() ([]models.Guideline, error)
@@ -32,6 +33,6 @@ type Repository interface {
 	UpdateGuideline(m models.Guideline) error
 
 	// TUNNEL
-	GetTunnel() models.Tunnel
+	GetTunnel(ID int64) models.Tunnel
 	SaveTunnel(models.Tunnel)
 }

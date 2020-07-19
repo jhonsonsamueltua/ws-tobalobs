@@ -14,7 +14,7 @@ func (u *token) GenerateJWT(conf *models.Config, userID int64) (string, error) {
 	tk := &models.Token{
 		StandardClaims: jwt.StandardClaims{
 			Issuer:    u.conf.Token.Issuer,
-			ExpiresAt: time.Now().Add(time.Hour * 24 * 7).Unix(),
+			ExpiresAt: time.Now().Add(time.Hour * 24 * 21).Unix(),
 		},
 		UserId: userID,
 	}

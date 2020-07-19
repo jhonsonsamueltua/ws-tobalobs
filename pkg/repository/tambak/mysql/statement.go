@@ -70,12 +70,12 @@ const (
 			waktu = ?
 		WHERE guideline_id = ?
 	`
-	queryGetTunnel    = "SELECT id, ip, port FROM tunnel WHERE id = 1"
+	queryGetTunnel    = "SELECT id, ip, port FROM tunnel WHERE id = ?"
 	queryUpdateTunnel = `
 		UPDATE tunnel
 		SET 
 			ip = ?,
 			port = ?
-		WHERE id = 1
+		WHERE id = ?
 	`
 )

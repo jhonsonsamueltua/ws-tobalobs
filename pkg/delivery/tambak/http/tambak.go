@@ -641,15 +641,39 @@ func (d *tambak) SaveTunnel(c echo.Context) error {
 		ctx = context.Background()
 	}
 
+	id, _ := strconv.ParseInt(c.FormValue("id"), 10, 64)
 	ip := c.FormValue("ip")
 	port := c.FormValue("port")
 
 	t := models.Tunnel{}
+	t.ID = id
 	t.IP = ip
 	t.Port = port
 
 	d.tambakUsecase.SaveTunnel(t)
 
+	resp.Status = models.StatusSucces
+	resp.Message = models.MessageSucces
+	c.Response().Header().Set(`X-Cursor`, "header")
+	return c.JSON(http.StatusOK, resp)
+}
+
+func (d *tambak) GetKondisiSekarang(c echo.Context) error {
+	var resp models.Responses
+	resp.Status = models.StatusFailed
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	log.Println("Test")
+	res, err := d.tambakUsecase.GetKondisiSekarang()
+	if err != nil {
+		resp.Message = err.Error()
+		c.Response().Header().Set(`X-Cursor`, "header")
+		return c.JSON(http.StatusInternalServerError, resp)
+	}
+
+	resp.Data = res
 	resp.Status = models.StatusSucces
 	resp.Message = models.MessageSucces
 	c.Response().Header().Set(`X-Cursor`, "header")
