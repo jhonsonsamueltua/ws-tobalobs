@@ -574,9 +574,9 @@ func (r *tambak) GetKondisiSekarang(ip string) (models.KondisiSekarang, error) {
 		return res, err
 	}
 
-	jsonErr := json.Unmarshal(body, &res)
-	if jsonErr != nil {
-		log.Fatal(jsonErr)
+	err = json.Unmarshal(body, &res)
+	if err != nil {
+		return res, err
 	}
 
 	fmt.Printf("Results: %v\n", res)

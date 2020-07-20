@@ -11,6 +11,7 @@ import (
 )
 
 func (r *FCM) PushNotification(deviceID []string, msg models.MessagePushNotif) {
+	log.Println(deviceID)
 	// Create the message to be sent.
 	message := &messaging.MulticastMessage{
 		Data: map[string]string{
