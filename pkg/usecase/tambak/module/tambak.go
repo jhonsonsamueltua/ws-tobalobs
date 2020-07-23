@@ -51,96 +51,96 @@ func (u *tambak) CreateTambak(t models.Tambak) (int64, error) {
 	if err != nil {
 		return tambakID, err
 	}
-	// loc, _ := time.LoadLocation("Asia/Jakarta")
-	// now := time.Now().In(loc)
-	// n := models.Notifikasi{
-	// 	TambakID:         tambakID,
-	// 	TipeNotifikasi:   "notif-guideline",
-	// 	StatusNotifikasi: "waiting",
-	// }
+	loc, _ := time.LoadLocation("Asia/Jakarta")
+	now := time.Now().In(loc)
+	n := models.Notifikasi{
+		TambakID:         tambakID,
+		TipeNotifikasi:   "notif-guideline",
+		StatusNotifikasi: "waiting",
+	}
 
-	// guide, _ := u.tambakRepo.GetAllGuideline()
-	// if t.JenisBudidaya == "pembenihan" {
-	// 	for _, g := range guide {
-	// 		var dt time.Time
-	// 		interval, _ := strconv.Atoi(g.Interval)
-	// 		if g.TipeBudidaya == "pembenihan" || g.TipeBudidaya == "semua" {
-	// 			if g.TipeJadwal == "sekali" {
-	// 				dt = now.AddDate(0, 0, interval)
-	// 				n.GuidelineID = g.GuidelineID
-	// 				n.Keterangan = g.Notifikasi
-	// 				n.WaktuTanggal = fmt.Sprintf("%s %s:00", dt.Format("2006-01-02"), g.Waktu)
-	// 				_, err := u.mysqlNotifRepo.SaveNotifGuideline(n)
-	// 				if err != nil {
-	// 					log.Println(err)
-	// 				}
-	// 			} else if g.TipeJadwal == "berulang" && interval > 5 {
-	// 				lamaBudidaya := 8 - t.UsiaLobster
-	// 				for i := 1; i <= (lamaBudidaya * 30 / interval); i++ {
-	// 					if i == 1 {
-	// 						dt = now.AddDate(0, 0, interval)
-	// 					} else {
-	// 						dt = dt.AddDate(0, 0, interval)
-	// 					}
-	// 					n.GuidelineID = g.GuidelineID
-	// 					n.Keterangan = g.Notifikasi
-	// 					n.WaktuTanggal = fmt.Sprintf("%s %s:00", dt.Format("2006-01-02"), g.Waktu)
-	// 					_, err := u.mysqlNotifRepo.SaveNotifGuideline(n)
-	// 					if err != nil {
-	// 						log.Println(err)
-	// 					}
-	// 				}
-	// 			}
-	// 		}
-	// 	}
-	// } else if t.JenisBudidaya == "pembesaran" {
-	// 	for _, g := range guide {
-	// 		var dt time.Time
-	// 		interval, _ := strconv.Atoi(g.Interval)
-	// 		if g.TipeBudidaya == "pembesaran" || g.TipeBudidaya == "semua" {
-	// 			if g.TipeJadwal == "sekali" {
-	// 				if interval == 0 { // interval 0 artinya tergantung umur lobster
-	// 					lamaBudidaya := 8 - t.UsiaLobster
-	// 					dt = now.AddDate(0, 0, lamaBudidaya*30)
-	// 					n.GuidelineID = g.GuidelineID
-	// 					n.Keterangan = g.Notifikasi
-	// 					n.WaktuTanggal = fmt.Sprintf("%s %s:00", dt.Format("2006-01-02"), g.Waktu)
-	// 					_, err := u.mysqlNotifRepo.SaveNotifGuideline(n)
-	// 					if err != nil {
-	// 						log.Println(err)
-	// 					}
-	// 				} else {
-	// 					dt = now.AddDate(0, 0, interval)
-	// 					n.GuidelineID = g.GuidelineID
-	// 					n.Keterangan = g.Notifikasi
-	// 					n.WaktuTanggal = fmt.Sprintf("%s %s:00", dt.Format("2006-01-02"), g.Waktu)
-	// 					_, err := u.mysqlNotifRepo.SaveNotifGuideline(n)
-	// 					if err != nil {
-	// 						log.Println(err)
-	// 					}
-	// 				}
-	// 			} else if g.TipeJadwal == "berulang" {
-	// 				lamaBudidaya := 8 - t.UsiaLobster
-	// 				if interval > 5 {
-	// 					for i := 1; i <= (lamaBudidaya * 30 / interval); i++ {
-	// 						if i == 1 {
-	// 							dt = now.AddDate(0, 0, interval)
-	// 						} else {
-	// 							dt = dt.AddDate(0, 0, interval)
-	// 						}
-	// 						n.GuidelineID = g.GuidelineID
-	// 						n.Keterangan = g.Notifikasi
-	// 						n.WaktuTanggal = fmt.Sprintf("%s %s:00", dt.Format("2006-01-02"), g.Waktu)
-	// 						_, err := u.mysqlNotifRepo.SaveNotifGuideline(n)
-	// 						if err != nil {
-	// 							log.Println(err)
-	// 						}
-	// 					}
-	// 				}
-	// 			}
-	// 		}
-	// 	}
-	// }
+	guide, _ := u.tambakRepo.GetAllGuideline()
+	if t.JenisBudidaya == "pembenihan" {
+		for _, g := range guide {
+			var dt time.Time
+			interval, _ := strconv.Atoi(g.Interval)
+			if g.TipeBudidaya == "pembenihan" || g.TipeBudidaya == "semua" {
+				if g.TipeJadwal == "sekali" {
+					dt = now.AddDate(0, 0, interval)
+					n.GuidelineID = g.GuidelineID
+					n.Keterangan = g.Notifikasi
+					n.WaktuTanggal = fmt.Sprintf("%s %s:00", dt.Format("2006-01-02"), g.Waktu)
+					_, err := u.mysqlNotifRepo.SaveNotifGuideline(n)
+					if err != nil {
+						log.Println(err)
+					}
+				} else if g.TipeJadwal == "berulang" && interval > 5 {
+					lamaBudidaya := 8 - t.UsiaLobster
+					for i := 1; i <= (lamaBudidaya * 30 / interval); i++ {
+						if i == 1 {
+							dt = now.AddDate(0, 0, interval)
+						} else {
+							dt = dt.AddDate(0, 0, interval)
+						}
+						n.GuidelineID = g.GuidelineID
+						n.Keterangan = g.Notifikasi
+						n.WaktuTanggal = fmt.Sprintf("%s %s:00", dt.Format("2006-01-02"), g.Waktu)
+						_, err := u.mysqlNotifRepo.SaveNotifGuideline(n)
+						if err != nil {
+							log.Println(err)
+						}
+					}
+				}
+			}
+		}
+	} else if t.JenisBudidaya == "pembesaran" {
+		for _, g := range guide {
+			var dt time.Time
+			interval, _ := strconv.Atoi(g.Interval)
+			if g.TipeBudidaya == "pembesaran" || g.TipeBudidaya == "semua" {
+				if g.TipeJadwal == "sekali" {
+					if interval == 0 { // interval 0 artinya tergantung umur lobster
+						lamaBudidaya := 8 - t.UsiaLobster
+						dt = now.AddDate(0, 0, lamaBudidaya*30)
+						n.GuidelineID = g.GuidelineID
+						n.Keterangan = g.Notifikasi
+						n.WaktuTanggal = fmt.Sprintf("%s %s:00", dt.Format("2006-01-02"), g.Waktu)
+						_, err := u.mysqlNotifRepo.SaveNotifGuideline(n)
+						if err != nil {
+							log.Println(err)
+						}
+					} else {
+						dt = now.AddDate(0, 0, interval)
+						n.GuidelineID = g.GuidelineID
+						n.Keterangan = g.Notifikasi
+						n.WaktuTanggal = fmt.Sprintf("%s %s:00", dt.Format("2006-01-02"), g.Waktu)
+						_, err := u.mysqlNotifRepo.SaveNotifGuideline(n)
+						if err != nil {
+							log.Println(err)
+						}
+					}
+				} else if g.TipeJadwal == "berulang" {
+					lamaBudidaya := 8 - t.UsiaLobster
+					if interval > 5 {
+						for i := 1; i <= (lamaBudidaya * 30 / interval); i++ {
+							if i == 1 {
+								dt = now.AddDate(0, 0, interval)
+							} else {
+								dt = dt.AddDate(0, 0, interval)
+							}
+							n.GuidelineID = g.GuidelineID
+							n.Keterangan = g.Notifikasi
+							n.WaktuTanggal = fmt.Sprintf("%s %s:00", dt.Format("2006-01-02"), g.Waktu)
+							_, err := u.mysqlNotifRepo.SaveNotifGuideline(n)
+							if err != nil {
+								log.Println(err)
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 
 	return tambakID, err
 }
