@@ -17,6 +17,7 @@ func InitTambakHandler(e *echo.Echo, u tambakUsecase.Usecase) {
 
 	//register handler
 	e.GET("/api/tambak", handler.GetAllTambak)
+	e.GET("/api/tambak/admin", handler.GetAllTambakForAdmin)
 	e.GET("/api/tambak/:tambakID", handler.GetTambakByID)
 	e.GET("/api/tambak/last-monitor/:tambakID", handler.GetLastMonitorTambak)
 	e.GET("/api/tambak/monitor/:tambakID/:tanggal", handler.GetMonitorTambak)

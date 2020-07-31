@@ -40,6 +40,31 @@ func (r *tambak) GetAllTambak(userID int64) ([]models.Tambak, error) {
 	return allTambak, nil
 }
 
+func (r *tambak) GetAllTambakForAdmin() ([]models.Tambak, error) {
+	allTambak := []models.Tambak{}
+	statement, err := r.DB.Prepare(queryGetAllTambakForAdmin)
+	if err != nil {
+		log.Println("[Repository][GetAllTambakForAdmin][Prepare] Error : ", err)
+		return allTambak, err
+	}
+	rows, err := statement.Query()
+	if err != nil {
+		log.Println("Repository error : ", err)
+		return allTambak, err
+	}
+
+	for rows.Next() {
+		tambak := models.Tambak{}
+		err := rows.Scan(&tambak.TambakID, &tambak.NamaTambak, &tambak.Panjang, &tambak.Lebar, &tambak.JenisBudidaya, &tambak.TanggalMulaiBudidaya, &tambak.UsiaLobster, &tambak.JumlahLobster, &tambak.JumlahLobsterJantan, &tambak.JumlahLobsterBetina, &tambak.Status)
+		if err != nil {
+			log.Println(err)
+		}
+		allTambak = append(allTambak, tambak)
+	}
+
+	return allTambak, nil
+}
+
 func (r *tambak) GetTambakByID(tambakID int64, userID int64) (models.Tambak, error) {
 	tambak := models.Tambak{}
 	statement, err := r.DB.Prepare(queryGetTambakByID)
@@ -102,7 +127,7 @@ func (r *tambak) GetLastMonitorTambak(tambakID int64) (models.MonitorTambak, err
 	}
 
 	for rows.Next() {
-		err := rows.Scan(&monitor.TambakId, &monitor.NamaTambak, &monitor.PH, &monitor.DO, &monitor.Suhu, &monitor.WaktuTanggal, &monitor.Keterangan)
+		err := rows.Scan(&monitor.TambakId, &monitor.NamaTambak, &monitor.PH, &monitor.DO, &monitor.Suhu, &monitor.WaktuTanggal, &monitor.Keterangan, &monitor.Panjang, &monitor.Lebar, &monitor.JumlahLobster)
 		if err != nil {
 			log.Println("[Repository][GetLastMonitorTambak][Scan] Error : ", err)
 			return monitor, err

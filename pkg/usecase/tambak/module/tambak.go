@@ -22,6 +22,12 @@ func (u *tambak) GetAllTambak(userID int64) ([]models.Tambak, int, error) {
 	return allTambak, totalNotif, err
 }
 
+func (u *tambak) GetAllTambakForAdmin() ([]models.Tambak, error) {
+	allTambak, err := u.tambakRepo.GetAllTambakForAdmin()
+
+	return allTambak, err
+}
+
 func (u *tambak) GetTambakByID(tambakID int64, userID int64) (models.Tambak, error) {
 	tambak, err := u.tambakRepo.GetTambakByID(tambakID, userID)
 
@@ -325,9 +331,21 @@ func (u *tambak) DeletePanduan(id int64) error {
 }
 
 func (u *tambak) GetMonitorTambak(tambakID int64, tanggal string) ([]models.MonitorTambak, error) {
+	monitor := []models.MonitorTambak{}
 	m, err := u.tambakRepo.GetMonitorTambak(tambakID, tanggal)
 
-	return m, err
+	for _, d := range m {
+		data := models.MonitorTambak{}
+		data = d
+		if d.Keterangan == "Kondisi tambak normal" {
+			data.Keterangan = "Normal"
+		} else {
+			data.Keterangan = "Bermasalah"
+		}
+		monitor = append(monitor, data)
+	}
+
+	return monitor, err
 }
 
 func (u *tambak) UpdateJadwal(tambakID int64, val string, _type string) error {

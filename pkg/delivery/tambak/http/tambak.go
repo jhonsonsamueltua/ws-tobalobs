@@ -44,6 +44,30 @@ func (d *tambak) GetAllTambak(c echo.Context) error {
 	return c.JSON(http.StatusOK, resp)
 }
 
+func (d *tambak) GetAllTambakForAdmin(c echo.Context) error {
+	var resp models.Responses
+	resp.Status = models.StatusFailed
+
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	allTambak, err := d.tambakUsecase.GetAllTambakForAdmin()
+	if err != nil {
+		log.Println(err)
+		resp.Message = err.Error()
+		c.Response().Header().Set(`X-Cursor`, "header")
+		return c.JSON(http.StatusInternalServerError, resp)
+	}
+
+	resp.Data = allTambak
+	resp.Status = models.StatusSucces
+	resp.Message = models.MessageSucces
+	c.Response().Header().Set(`X-Cursor`, "header")
+	return c.JSON(http.StatusOK, resp)
+}
+
 func (d *tambak) GetTambakByID(c echo.Context) error {
 	var resp models.Responses
 	resp.Status = models.StatusFailed

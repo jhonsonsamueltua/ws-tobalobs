@@ -27,6 +27,9 @@ type MonitorTambak struct {
 	Suhu            float64 `json:"suhu"`
 	WaktuTanggal    string  `json:"waktuTanggal"`
 	Keterangan      string  `json:"keterangan"`
+	Panjang         float64 `json:"panjang,omitempty"`
+	Lebar           float64 `json:"lebar,omitempty"`
+	JumlahLobster   int     `json:"jumlahLobster,omitempty"`
 }
 
 type Notifikasi struct {
@@ -93,8 +96,8 @@ type Tunnel struct {
 }
 
 type KondisiSekarang struct {
-	PH   float64 `json:"ph"`
-	Suhu float64 `json:"suhu"`
-	DO   float64 `json:"do"`
-	Keterangan string `json:"keterangan"`
+	PH         float64 `json:"ph"`
+	Suhu       float64 `json:"suhu"`
+	DO         float64 `json:"do"`
+	Keterangan string  `json:"keterangan"`
 }
